@@ -228,6 +228,7 @@ const styles = {
     generatedImage: {
         maxWidth: '100%',
         maxHeight: '100%',
+        objectFit: 'contain', // 이미지 잘림 방지
     },
     useButton: {
         padding: '10px 20px',
