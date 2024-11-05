@@ -1,9 +1,10 @@
 // ImageGeneration.js
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const ImageGeneration = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const [inputText, setInputText] = useState(location.state?.message || ''); // 전달된 메시지를 받아오고, 수정 가능하도록 상태 관리
     const [style, setStyle] = useState(null);
     const [subject, setSubject] = useState(null);
@@ -128,7 +129,17 @@ const ImageGeneration = () => {
                             <p>이미지를 생성하세요</p>
                         )}
                     </div>
-                    <button onClick={() => alert("이 이미지를 사용합니다.")} style={styles.useButton}>
+                    
+                    <button
+                        onClick={() => {
+                            if (generatedImage) {
+                                navigate('/', { state: { generatedImage, message: inputText } });
+                            } else {
+                                alert("이미지를 먼저 생성해주세요.");
+                            }
+                        }}
+                        style={styles.useButton}
+                    >
                         이미지 사용하기
                     </button>
                 </div>
