@@ -4,14 +4,27 @@ import { FaTrash, FaChevronUp, FaChevronDown } from "react-icons/fa"; // 화살�
 import PersonalizationModal from "./PersonalizationModal"; // 모달 컴포넌트 임포트
 import { useNavigate } from "react-router-dom"; // 페이지 이동을 위한 useNavigate 사용
 
-const ContactList = () => {
+const ContactList = ({ message, setMessage }) => {
   const navigate = useNavigate(); // navigate 훅 선언
+
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열림/닫힘 상태
+
+  const [convertedTexts, setConvertedTexts] = useState({}); // 수신자별 메시지 상태
+
+  const generateMessagesForSelectedContacts = () => {
+    const texts = selectedContacts.reduce((acc, contactId) => {
+      acc[contactId] = message; // 순수 메시지만 초기 메시지로 설정
+      return acc;
+    }, {});
+    setConvertedTexts(texts); // 각 수신자별 초기 메시지 저장
+  };
+
   const openModal = () => {
     if (selectedContacts.length === 0) {
-      alert("개인 맞춤화를 위해 하나 이상의 연락처를 선택하세요."); // 경고 메시지 표시
-      return; // 모달 열기 중단
+      alert("개인 맞춤화를 위해 하나 이상의 연락처를 선택하세요.");
+      return;
     }
+    generateMessagesForSelectedContacts();
     setIsModalOpen(true);
   };
 
@@ -233,13 +246,16 @@ const ContactList = () => {
                     </button> */}
         </div>
       </div>
-      {/* 모달이 열려있을 때만 PersonalizationModal 렌더링 */}
+      {/* 모달 컴포넌트 호출 */}
       {isModalOpen && (
         <PersonalizationModal
           selectedContacts={contacts.filter((contact) =>
             selectedContacts.includes(contact.id)
           )}
           closeModal={closeModal}
+          convertedTexts={convertedTexts}
+          setConvertedTexts={setConvertedTexts} // 수신자별 메시지를 업데이트
+          onComplete={() => setIsModalOpen(false)} // 완료 후 모달 닫기
         />
       )}
 
