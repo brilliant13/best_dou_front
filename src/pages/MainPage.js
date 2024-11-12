@@ -1,14 +1,14 @@
-//메인 페이지
-import React, { useState } from "react"; // useState 불러오기
+import React, { useState } from "react";
 import ContactList from "../components/ContactList";
-import { useNavigate, useLocation } from "react-router-dom"; // useLocation 추가
-import logo from "../assets/images/logo.png"; // 로고 이미지를 불러옵니다.
+import { useNavigate, useLocation } from "react-router-dom";
+import logo from "../assets/images/logo.png";
 
 const MainPage = () => {
   const navigate = useNavigate();
-  const location = useLocation(); // 메시지를 받을 위치 훅
-  const messageFromState = location.state?.message || ""; // 전달된 메시지 값
-  const [message, setMessage] = useState(messageFromState); // 전달된 메시지 초기값으로 설정
+  const location = useLocation();
+  const messageFromState = location.state?.message || "";
+  const [message, setMessage] = useState(messageFromState);
+  const generatedImage = location.state?.generatedImage || null; // Retrieve the generated image URL
 
   return (
     <div style={styles.container}>
@@ -30,7 +30,7 @@ const MainPage = () => {
             style={styles.textArea}
             placeholder="메시지를 입력하세요"
             value={message}
-            onChange={(e) => setMessage(e.target.value)} // 메시지 업데이트
+            onChange={(e) => setMessage(e.target.value)}
           ></textarea>
           <button
             style={styles.button}
@@ -43,12 +43,18 @@ const MainPage = () => {
         {/* 이미지 자동생성 섹션 */}
         <div style={styles.section}>
           <label style={styles.label}>이미지</label>
-          <div style={styles.imageBox}>이미지가 여기에 표시됩니다.</div>
+          <div style={styles.imageBox}>
+            {generatedImage ? (
+              <img src={generatedImage} alt="Generated" style={{ maxWidth: "100%", maxHeight: "100%" }} />
+            ) : (
+              "이미지가 여기에 표시됩니다."
+            )}
+          </div>
           <button
             style={styles.button}
             onClick={() =>
               navigate("/image-generation", { state: { message } })
-            } // 상태 전달
+            }
           >
             이미지 자동생성
           </button>
@@ -60,7 +66,6 @@ const MainPage = () => {
 
       {/* 하단부: 챗봇 사용하기, 전송하기 버튼 */}
       <div style={styles.container}>
-        {/* "챗봇 사용하기" 버튼 */}
         <button
           style={styles.chatbotButton}
           onClick={() => navigate("/chatbot")}
@@ -68,7 +73,6 @@ const MainPage = () => {
           챗봇 사용하기
         </button>
 
-        {/* "전송하기" 버튼 */}
         <button style={styles.sendButton}>전송하기</button>
       </div>
     </div>
