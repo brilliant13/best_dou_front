@@ -5,12 +5,14 @@ const ImageGeneration = () => {
   const location = useLocation();
   const navigate = useNavigate(); // Define navigate
   const [inputText, setInputText] = useState(location.state?.message || "");
+  const [keyword] = useState(location.state?.keyword || ""); // 전달받은 키워드
   const [style, setStyle] = useState(null);
   const [subject, setSubject] = useState(null);
   const [emotion, setEmotion] = useState(null);
   const [background, setBackground] = useState(null);
   const [generatedImage, setGeneratedImage] = useState(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
   const translateCategory = (category, selection) => {
     const translations = {
       style: {
@@ -51,8 +53,9 @@ const ImageGeneration = () => {
       return;
     }
 
-    setIsButtonDisabled(true);
+    setIsButtonDisabled(true); // 버튼 비활성화
 
+    // 각 카테고리의 선택을 영어로 변환
     const requestData = {
       style: translateCategory("style", style),
       subject: translateCategory("subject", subject),
@@ -68,18 +71,29 @@ const ImageGeneration = () => {
       },
       body: JSON.stringify(requestData),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`API 요청 실패: ${response.status}`);
+        }
+        return response.json();
+      })
       .then((data) => {
+        console.log("API 응답 데이터:", data); // API 응답 확인
+
         if (data.status === "success") {
-          setGeneratedImage(data.imageUrl);
-          alert(data.message);
+          // Base64 데이터를 처리
+          setGeneratedImage(`data:image/png;base64,${data.imageBase64}`);
+          alert(data.message); // 성공 메시지 표시
         } else {
-          alert(data.message);
+          alert(data.message); // 오류 메시지 표시
         }
       })
-      .catch((error) => console.error("Error:", error))
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("이미지 생성 중 오류가 발생했습니다. 다시 시도하세요.");
+      })
       .finally(() => {
-        setTimeout(() => setIsButtonDisabled(false), 10000);
+        setTimeout(() => setIsButtonDisabled(false), 10000); // 10초 후 버튼 재활성화
       });
   };
 
@@ -88,6 +102,14 @@ const ImageGeneration = () => {
       <div style={styles.row}>
         <div style={styles.column}>
           <h2>발송 목적 및 내용</h2>
+
+          {/* 전달받은 키워드 표시 */}
+          {inputText && (
+            <div style={styles.selectedKeyword}>
+              <h3>추출된 키워드:</h3>
+              <p>{keyword}</p>
+            </div>
+          )}
 
           <textarea
             placeholder="text 입력"
@@ -148,10 +170,17 @@ const ImageGeneration = () => {
               <p>이미지를 생성하세요</p>
             )}
           </div>
+
           <button
-            onClick={() =>
-              navigate("/", { state: { generatedImage, message: inputText } })
-            } // 메시지 추가 전달
+            onClick={() => {
+              if (generatedImage) {
+                navigate("/", {
+                  state: { generatedImage, message: inputText },
+                });
+              } else {
+                alert("이미지를 먼저 생성해주세요.");
+              }
+            }}
             style={styles.useButton}
           >
             이미지 사용하기
@@ -239,6 +268,17 @@ const styles = {
     border: "none",
     borderRadius: "8px",
   },
+  selectedKeyword: {
+    marginBottom: "20px",
+    padding: "10px",
+    backgroundColor: "#f4f4f9",
+    borderRadius: "8px",
+    border: "1px solid #ddd",
+    fontSize: "16px",
+    color: "#333",
+    textAlign: "center",
+  },
+
   imageDisplay: {
     flex: 1,
     display: "flex",
@@ -253,6 +293,7 @@ const styles = {
   generatedImage: {
     maxWidth: "100%",
     maxHeight: "100%",
+    objectFit: "contain", // 이미지 잘림 방지
   },
   useButton: {
     padding: "10px 20px",

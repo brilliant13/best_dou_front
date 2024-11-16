@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import ContactList from "../components/ContactList";
 import { useNavigate, useLocation } from "react-router-dom";
 import logo from "../assets/images/logo.png";
+import axios from 'axios';
+
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -9,6 +11,79 @@ const MainPage = () => {
   const messageFromState = location.state?.message || "";
   const [message, setMessage] = useState(messageFromState);
   const generatedImage = location.state?.generatedImage || null; // Retrieve the generated image URL
+
+  // 메시지에서 키워드를 추출하는 함수
+  const extractKeywords = async (message) => {
+    try {
+      const prompt = `
+Please extract one single keyword in English from the following message that can be used for image generation.
+
+메시지: ${message}
+
+키워드:
+`;
+
+      const response = await axios.post(
+        "https://api.openai.com/v1/chat/completions",
+        {
+          model: "gpt-4",
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are an NLP expert. Extract exactly one relevant keyword in English from the provided message that can be used for image generation. The keyword must be concise and relevant.",
+            },
+            {
+              role: "user",
+              content: prompt,
+            },
+          ],
+          max_tokens: 100,
+          temperature: 0.5,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
+          },
+        }
+      );
+
+      const keywords = response.data.choices[0].message.content.trim();
+      return keywords.split(",").map((keyword) => keyword.trim());
+    } catch (err) {
+      console.error(err);
+      return [];
+    }
+  };
+
+  // 이미지 자동생성 버튼 클릭 시 처리 로직
+  const handleImageGeneration = async () => {
+    if (!message.trim()) {
+      alert("메시지를 입력하세요.");
+      return;
+    }
+
+    try {
+      // 키워드 추출
+      const extractedKeywords = await extractKeywords(message);
+
+      if (extractedKeywords.length === 0) {
+        alert("키워드를 추출하지 못했습니다. 메시지를 확인해주세요.");
+        return;
+      }
+
+      // 추출된 키워드를 첫 번째 값으로 사용
+      const keyword = extractedKeywords[0];
+      console.log("추출된 키워드:", keyword);
+
+      // /image-generation으로 이동하면서 상태 전달
+      navigate("/image-generation", { state: { message, keyword } });
+    } catch (error) {
+      console.error("키워드 추출 중 오류 발생:", error);
+      alert("키워드 추출에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
 
   return (
     <div style={styles.container}>
@@ -54,12 +129,7 @@ const MainPage = () => {
               "이미지가 여기에 표시됩니다."
             )}
           </div>
-          <button
-            style={styles.button}
-            onClick={() =>
-              navigate("/image-generation", { state: { message } })
-            }
-          >
+          <button style={styles.button} onClick={handleImageGeneration}>
             이미지 자동생성
           </button>
         </div>
