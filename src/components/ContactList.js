@@ -7,38 +7,15 @@ import tonesobj from "../data/tones.json"; // JSON 파일 import
 
 const ContactList = ({ message, setMessage }) => {
   const tones = tonesobj;
-  // 특정 연락처의 어조 선택 함수
-  const handleToneSelection = (tone) => {
-    setEditData((prevData) => ({ ...prevData, tone: tone }));
-  };
   const navigate = useNavigate(); // navigate 훅 선언
-
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열림/닫힘 상태
-
   const [convertedTexts, setConvertedTexts] = useState({}); // 수신자별 메시지 상태
-  const generateMessagesForSelectedContacts = () => {
-    const texts = selectedContacts.reduce((acc, contactId) => {
-      acc[contactId] = message; // 순수 메시지만 초기 메시지로 설정
-      return acc;
-    }, {});
-    setConvertedTexts(texts); // 각 수신자별 초기 메시지 저장
-  };
-
-  const openModal = () => {
-    if (selectedContacts.length === 0) {
-      alert("개인 맞춤화를 위해 하나 이상의 연락처를 선택하세요.");
-      return;
-    }
-    generateMessagesForSelectedContacts();
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
   const [activeTab, setActiveTab] = useState("찐친");
   const [expandedContactId, setExpandedContactId] = useState(null); // 세부사항이 확장된 연락처 ID
+  const [selectedContacts, setSelectedContacts] = useState([]); // 선택된 연락처 목록
+  const [isAllChecked, setIsAllChecked] = useState(false); // 전체 선택 상태를 저장하는 변수
+  const [isEditing, setIsEditing] = useState(null); // 수정 모드 상태 저장
+  const [editData, setEditData] = useState({ tag: "", memo: "", tone: "" });
   const [contacts, setContacts] = useState([
     {
       id: 1,
@@ -126,12 +103,26 @@ const ContactList = ({ message, setMessage }) => {
     },
   ]);
 
-  const [selectedContacts, setSelectedContacts] = useState([]); // 선택된 연락처 목록
+  const generateMessagesForSelectedContacts = () => {
+    const texts = selectedContacts.reduce((acc, contactId) => {
+      acc[contactId] = message; // 순수 메시지만 초기 메시지로 설정
+      return acc;
+    }, {});
+    setConvertedTexts(texts); // 각 수신자별 초기 메시지 저장
+  };
 
-  const [isAllChecked, setIsAllChecked] = useState(false); // 전체 선택 상태를 저장하는 변수
+  const openModal = () => {
+    if (selectedContacts.length === 0) {
+      alert("개인 맞춤화를 위해 하나 이상의 연락처를 선택하세요.");
+      return;
+    }
+    generateMessagesForSelectedContacts();
+    setIsModalOpen(true);
+  };
 
-  const [isEditing, setIsEditing] = useState(null); // 수정 모드 상태 저장
-  const [editData, setEditData] = useState({ tag: "", memo: "", tone: "" });
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   const filteredContacts = contacts.filter(
     (contact) => contact.group === activeTab
@@ -198,6 +189,11 @@ const ContactList = ({ message, setMessage }) => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
+  // 특정 연락처의 어조 선택 함수
+  const handleToneSelection = (tone) => {
+    setEditData((prevData) => ({ ...prevData, tone: tone }));
   };
 
   return (
