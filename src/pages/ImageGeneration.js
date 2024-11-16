@@ -1,18 +1,17 @@
-// ImageGeneration.js
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const ImageGeneration = () => {
     const location = useLocation();
-    const [inputText, setInputText] = useState(location.state?.message || ''); // 전달된 메시지를 받아오고, 수정 가능하도록 상태 관리
+    const navigate = useNavigate(); // Define navigate
+    const [inputText, setInputText] = useState(location.state?.message || ''); 
     const [style, setStyle] = useState(null);
     const [subject, setSubject] = useState(null);
     const [emotion, setEmotion] = useState(null);
     const [background, setBackground] = useState(null);
-    const [generatedImage, setGeneratedImage] = useState(null); // 생성된 이미지 상태
-    const [isButtonDisabled, setIsButtonDisabled] = useState(false); // 버튼 활성화 상태
+    const [generatedImage, setGeneratedImage] = useState(null); 
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false); 
 
-    // 각 카테고리를 영어로 매핑하는 함수
     const translateCategory = (category, selection) => {
         const translations = {
             style: {
@@ -43,21 +42,18 @@ const ImageGeneration = () => {
         return translations[category][selection];
     };
 
-    // 입력 값 변경 핸들러
     const handleInputChange = (e) => {
         setInputText(e.target.value);
     };
 
-    // 이미지 생성을 요청하는 함수
     const handleSubmit = () => {
         if (!style || !subject || !emotion || !background) {
             alert("모든 카테고리에서 최소한 한 개의 옵션을 선택해야 합니다.");
             return;
         }
 
-        setIsButtonDisabled(true); // 버튼 비활성화
+        setIsButtonDisabled(true);
 
-        // 각 카테고리의 선택을 영어로 변환
         const requestData = {
             style: translateCategory('style', style),
             subject: translateCategory('subject', subject),
@@ -77,21 +73,20 @@ const ImageGeneration = () => {
         .then((data) => {
             if (data.status === "success") {
                 setGeneratedImage(data.imageUrl);
-                alert(data.message);  // 성공 메시지 표시
+                alert(data.message);
             } else {
-                alert(data.message);  // 오류 메시지 표시
+                alert(data.message);
             }
         })
         .catch((error) => console.error("Error:", error))
         .finally(() => {
-            setTimeout(() => setIsButtonDisabled(false), 10000); // 10초 후 버튼 재활성화
+            setTimeout(() => setIsButtonDisabled(false), 10000);
         });
     };
 
     return (
         <div style={styles.container}>
             <div style={styles.row}>
-                {/* 왼쪽 섹션: 메시지, 카테고리 선택 및 이미지 생성 버튼 */}
                 <div style={styles.column}>
                     <h2>발송 목적 및 내용</h2>
                     
@@ -102,7 +97,6 @@ const ImageGeneration = () => {
                         style={styles.textArea}
                     />
 
-                    {/* 카테고리 선택 섹션 */}
                     <div style={styles.keywordContainer}>
                         <h3>주요 키워드 제시</h3>
                         <div style={styles.keywordButtons}>
@@ -118,7 +112,6 @@ const ImageGeneration = () => {
                     </button>
                 </div>
 
-                {/* 오른쪽 섹션: 생성 결과 */}
                 <div style={styles.column}>
                     <h2>생성결과</h2>
                     <div style={styles.imageDisplay}>
@@ -128,7 +121,10 @@ const ImageGeneration = () => {
                             <p>이미지를 생성하세요</p>
                         )}
                     </div>
-                    <button onClick={() => alert("이 이미지를 사용합니다.")} style={styles.useButton}>
+                    <button
+                        onClick={() => navigate("/", { state: { generatedImage } })}
+                        style={styles.useButton}
+                    >
                         이미지 사용하기
                     </button>
                 </div>
@@ -145,7 +141,7 @@ const CategorySelector = ({ label, options, selected, onSelect }) => (
             <button
                 key={option}
                 onClick={() => onSelect(option)}
-                style={{    // 선택 했을 때 색 변경
+                style={{
                     ...styles.keywordButton,
                     backgroundColor: selected === option ? '#007bff' : '#e1e5f2',
                     color: selected === option ? 'white' : 'black',
