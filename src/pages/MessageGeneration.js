@@ -9,6 +9,7 @@ const MessageGenerationPage = () => {
   const [selectedKeywords, setSelectedKeywords] = useState([]); // 선택된 키워드 상태
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태
   const [error, setError] = useState(null); // 에러 상태
+  const [extractedKeywords, setExtractedKeywords] = useState([]); // 추출된 키워드 상태
 
   const navigate = useNavigate();
 
@@ -32,19 +33,19 @@ const MessageGenerationPage = () => {
       alert('메시지를 입력해주세요.');
       return;
     }
-
+  
     setIsLoading(true);
     setError(null);
-
+  
     const prompt = `
-다음의 키워드와 내용을 바탕으로 적절한 메시지를 생성해 주세요.
-
-키워드: ${selectedKeywords.length > 0 ? selectedKeywords.join(', ') : '없음'}
-내용: ${inputText}
-
-생성된 메시지:
-`;
-
+  다음의 키워드와 내용을 바탕으로 적절한 메시지를 생성해 주세요.
+  
+  키워드: ${selectedKeywords.length > 0 ? selectedKeywords.join(', ') : '없음'}
+  내용: ${inputText}
+  
+  생성된 메시지:
+  `;
+  
     try {
       const response = await axios.post(
         'https://api.openai.com/v1/chat/completions',
@@ -70,9 +71,13 @@ const MessageGenerationPage = () => {
           },
         }
       );
-
+  
       const message = response.data.choices[0].message.content.trim();
       setGeneratedMessage(message);
+  
+      // 키워드 추출 로직 추가
+      const extracted = await extractKeywords(message);
+      setExtractedKeywords(extracted);
     } catch (err) {
       console.error(err);
       setError('메시지 생성에 실패했습니다. 다시 시도해주세요.');
@@ -80,6 +85,51 @@ const MessageGenerationPage = () => {
       setIsLoading(false);
     }
   };
+  
+  // 메시지에서 키워드를 추출하는 함수
+  const extractKeywords = async (message) => {
+    try {
+      const prompt = `
+  다음 메시지에서 이미지 생성을 위하기 위해 이미지 생성에 넣을 1개의 키워드를 영어로 추출해 주세요. 
+  
+  메시지: ${message}
+  
+  키워드:
+  `;
+  
+      const response = await axios.post(
+        'https://api.openai.com/v1/chat/completions',
+        {
+          model: 'gpt-4',
+          messages: [
+            {
+              role: 'system',
+              content: '메시지 내용을 바탕으로 이미지 생성을 하기위해서 메세지 내용에서 이미지생성 프롬프트에 넣을 단 1개의 핵심 키워드를 영어로 추출합니다.',
+            },
+            {
+              role: 'user',
+              content: prompt,
+            },
+          ],
+          max_tokens: 100,
+          temperature: 0.5,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
+          },
+        }
+      );
+  
+      const keywords = response.data.choices[0].message.content.trim();
+      return keywords.split(',').map((keyword) => keyword.trim());
+    } catch (err) {
+      console.error(err);
+      return [];
+    }
+  };
+  
 
   const handleUseMessage = () => {
     const alertMessage = `선택된 키워드: ${
@@ -165,6 +215,18 @@ const MessageGenerationPage = () => {
           >
             메시지 사용
           </button>
+
+          {/* 추출된 키워드 표시 */}
+          {extractedKeywords.length > 0 && (
+            <div style={styles.extractedKeywords}>
+              <h4>추출된 키워드:</h4>
+              <ul>
+                {extractedKeywords.map((keyword, index) => (
+                  <li key={index}>{keyword}</li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -243,6 +305,9 @@ const styles = {
   errorText: {
     color: 'red',
     marginTop: '10px',
+  },
+  extractedKeywords: {
+    marginTop: '20px',
   },
 };
 
