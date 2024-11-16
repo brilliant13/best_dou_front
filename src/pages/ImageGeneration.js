@@ -58,6 +58,7 @@ const ImageGeneration = () => {
     // 각 카테고리의 선택을 영어로 변환
     const requestData = {
       style: translateCategory("style", style),
+      keyword: keyword,
       subject: translateCategory("subject", subject),
       emotion: translateCategory("emotion", emotion),
       background: translateCategory("background", background),
@@ -211,35 +212,52 @@ const CategorySelector = ({ label, options, selected, onSelect }) => (
   </div>
 );
 
-// 스타일 정의
 const styles = {
   container: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    padding: "20px",
-    fontFamily: "Arial, sans-serif",
+    padding: "30px",
+    fontFamily: "'Roboto', sans-serif",
+    backgroundColor: "#F0F4F8",
+    minHeight: "100vh",
   },
   row: {
+    padding: "17px",
     display: "flex",
     justifyContent: "space-between",
     width: "100%",
-    maxWidth: "900px",
+    maxWidth: "1100px", // 기존 900px에서 확장
+    gap: "30px", // 박스 간격 조정
     marginBottom: "20px",
   },
   column: {
     display: "flex",
     flexDirection: "column",
-    width: "45%",
+    width: "100%",
+    maxWidth: "550px", // 기존보다 확장된 너비
+    backgroundColor: "#FFFFFF",
+    borderRadius: "12px",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    padding: "30px",
+    gap: "20px", // 요소 간격
   },
   textArea: {
-    width: "100%",
+    width: "90%",
     height: "150px",
-    marginTop: "10px",
-    padding: "10px",
-    borderRadius: "8px",
-    border: "1px solid #ccc",
+    padding: "12px",
+    borderRadius: "12px",
+    border: "1px solid #D1D9E6",
     fontSize: "16px",
+    color: "#333",
+    backgroundColor: "#F9FAFB",
+    outline: "none",
+    boxShadow: "inset 0 2px 4px rgba(0, 0, 0, 0.05)",
+    transition: "border-color 0.3s, box-shadow 0.3s",
+  },
+  textAreaFocus: {
+    borderColor: "#4A90E2",
+    boxShadow: "0 0 8px rgba(74, 144, 226, 0.3)",
   },
   keywordContainer: {
     marginTop: "20px",
@@ -247,64 +265,122 @@ const styles = {
   keywordButtons: {
     display: "flex",
     flexWrap: "wrap",
-    gap: "10px",
+    gap: "15px", // 버튼 사이 간격 추가
     marginTop: "10px",
+    justifyContent: "flex-start", // 버튼 정렬 조정
   },
   keywordButton: {
-    padding: "8px 16px",
+    marginLeft: "7px",
+    padding: "10px 16px",
     fontSize: "14px",
+    fontWeight: "500",
     cursor: "pointer",
-    border: "none",
-    borderRadius: "8px",
-    backgroundColor: "#e1e5f2",
-    margin: "5px",
+    border: "1px solid #4A90E2",
+    borderRadius: "20px",
+    backgroundColor: "#FFFFFF",
+    color: "#4A90E2",
+    transition: "all 0.3s",
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+  },
+  keywordButtonActive: {
+    backgroundColor: "#4A90E2",
+    color: "#FFFFFF",
+    boxShadow: "0 4px 8px rgba(74, 144, 226, 0.3)",
+  },
+  keywordButtonHover: {
+    backgroundColor: "#E6F0FF",
+    color: "#333",
+    boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+    transform: "translateY(-2px)", // 부드러운 들림 효과
   },
   generateButton: {
     marginTop: "20px",
-    padding: "10px 20px",
+    padding: "12px 24px",
     fontSize: "16px",
+    fontWeight: "600",
     cursor: "pointer",
-    backgroundColor: "#b3c7ff",
+    backgroundColor: "#4A90E2",
+    color: "#FFFFFF",
     border: "none",
     borderRadius: "8px",
+    transition: "background-color 0.3s, transform 0.2s",
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+  },
+  generateButtonHover: {
+    backgroundColor: "#357ABD",
+    transform: "translateY(-2px)",
+    boxShadow: "0 4px 8px rgba(53, 122, 189, 0.3)",
   },
   selectedKeyword: {
     marginBottom: "20px",
-    padding: "10px",
-    backgroundColor: "#f4f4f9",
-    borderRadius: "8px",
-    border: "1px solid #ddd",
+    padding: "20px",
+    backgroundColor: "#FFFFFF",
+    borderRadius: "12px",
+    border: "1px solid #4A90E2",
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+    textAlign: "center",
+    transition: "box-shadow 0.3s, transform 0.2s",
+  },
+  selectedKeywordHover: {
+    boxShadow: "0 4px 8px rgba(74, 144, 226, 0.3)",
+    transform: "translateY(-2px)",
+  },
+  keywordTitle: {
+    fontSize: "18px",
+    fontWeight: "600",
+    color: "#4A90E2",
+    marginBottom: "8px",
+  },
+  keywordText: {
     fontSize: "16px",
     color: "#333",
-    textAlign: "center",
+    fontWeight: "500",
   },
-
   imageDisplay: {
-    flex: 1,
+    marginLeft: "61px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    border: "1px solid #ccc",
+    border: "1px solid #D1D9E6",
     padding: "20px",
-    borderRadius: "8px",
-    height: "250px",
-    marginBottom: "20px",
+    borderRadius: "12px",
+    width: "300px",
+    height: "300px",
+    backgroundColor: "#FFFFFF",
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
   },
   generatedImage: {
     maxWidth: "100%",
     maxHeight: "100%",
-    objectFit: "contain", // 이미지 잘림 방지
+    borderRadius: "8px",
+    objectFit: "contain",
   },
   useButton: {
-    padding: "10px 20px",
+    padding: "12px 24px",
     fontSize: "16px",
+    fontWeight: "600",
     cursor: "pointer",
-    backgroundColor: "#b3c7ff",
+    backgroundColor: "#4A90E2",
+    color: "#FFFFFF",
     border: "none",
     borderRadius: "8px",
     alignSelf: "center",
-    marginTop: "186px",
+    marginTop: "20px",
+    transition: "background-color 0.3s, transform 0.2s",
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+  },
+  useButtonHover: {
+    backgroundColor: "#357ABD",
+    transform: "translateY(-2px)",
+    boxShadow: "0 4px 8px rgba(53, 122, 189, 0.3)",
   },
 };
 
+// Replace the keyword box
+const SelectedKeywordBox = ({ keyword }) => (
+  <div style={styles.selectedKeyword}>
+    <h3 style={styles.keywordTitle}>추출된 키워드:</h3>
+    <p style={styles.keywordText}>{keyword}</p>
+  </div>
+);
 export default ImageGeneration;

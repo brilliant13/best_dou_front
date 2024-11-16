@@ -13,7 +13,7 @@ const Header = () => {
       </div>
 
       {/* 가운데: 브랜드 이름 */}
-      <h1 style={styles.brand}>CHOEGODAW</h1>
+      <h1 style={styles.brand}>BESTDAOU</h1>
 
       {/* 오른쪽: 사용자 이름 */}
       <div style={styles.rightSection}>

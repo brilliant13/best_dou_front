@@ -3,6 +3,7 @@ import ContactList from "../components/ContactList";
 import { useNavigate, useLocation } from "react-router-dom";
 import logo from "../assets/images/logo.png";
 import axios from "axios";
+
 const MainPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -10,7 +11,6 @@ const MainPage = () => {
   const [message, setMessage] = useState(messageFromState);
   const generatedImage = location.state?.generatedImage || null;
 
-  // 메시지에서 키워드를 추출하는 함수
   const extractKeywords = async (message) => {
     try {
       const prompt = `
@@ -20,7 +20,6 @@ Please extract one single keyword in English from the following message that can
 
 키워드:
 `;
-
       const response = await axios.post(
         "https://api.openai.com/v1/chat/completions",
         {
@@ -62,7 +61,6 @@ Please extract one single keyword in English from the following message that can
     }
 
     try {
-      // 키워드 추출
       const extractedKeywords = await extractKeywords(message);
 
       if (extractedKeywords.length === 0) {
@@ -93,7 +91,6 @@ Please extract one single keyword in English from the following message that can
       <div style={styles.row}>
         <div style={styles.section}>
           <label style={styles.label}>메시지</label>
-          {/* contentEditable 대신 textarea 사용 */}
           <textarea
             style={styles.textArea}
             placeholder="메시지를 입력하세요"
@@ -108,7 +105,6 @@ Please extract one single keyword in English from the following message that can
           </button>
         </div>
 
-        {/* 이미지 자동생성 섹션 */}
         <div style={styles.section}>
           <label style={styles.label}>이미지</label>
           <div style={styles.imageBox}>
@@ -199,9 +195,9 @@ const styles = {
     marginBottom: "10px",
     color: "#4A90E2",
   },
-  textarea: {
+  textArea: {
     width: "100%",
-    height: "400px",
+    height: "400px", // 이미지 박스 크기와 동일하게 조정
     padding: "20px",
     fontSize: "16px",
     border: "1px solid #4A90E2",
@@ -213,11 +209,6 @@ const styles = {
     lineHeight: "1.5",
     outline: "none",
     marginBottom: "10px",
-    transition: "border-color 0.3s",
-    textAlign: "center",
-    wordWrap: "break-word",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
   },
   imageBox: {
     width: "100%",
@@ -233,10 +224,6 @@ const styles = {
     boxSizing: "border-box",
     fontSize: "20px",
     color: "#A9A9A9",
-  },
-  imageText: {
-    fontSize: "18px",
-    color: "#4A90E2",
   },
   chatbotButton: {
     backgroundColor: "#4A90E2",
