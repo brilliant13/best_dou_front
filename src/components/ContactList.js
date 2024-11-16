@@ -16,7 +16,6 @@ const ContactList = ({ message, setMessage }) => {
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열림/닫힘 상태
 
   const [convertedTexts, setConvertedTexts] = useState({}); // 수신자별 메시지 상태
-
   const generateMessagesForSelectedContacts = () => {
     const texts = selectedContacts.reduce((acc, contactId) => {
       acc[contactId] = message; // 순수 메시지만 초기 메시지로 설정
