@@ -1,0 +1,13 @@
+[
+  { "label": "친근한 말투", "instruction": "친근하고 다정한 말투로" },
+  { "label": "격식있는 말투", "instruction": "격식 있는 말투로" },
+  { "label": "유쾌한 말투", "instruction": "유쾌하고 밝은 말투로" },
+  { "label": "정중한 말투", "instruction": "정중하고 공손한 말투로" },
+  { "label": "친구 말투", "instruction": "친구한테 하는 말투로" },
+  { "label": "힙합 말투", "instruction": "힙합하는 사람 말투로" },
+  { "label": "여자친구 말투", "instruction": "여자친구한테 하는 말투로" },
+  { "label": "오바마 말투", "instruction": "오바마같은 말투로" },
+  { "label": "아재 말투", "instruction": "아재같은 말투로" },
+  { "label": "mz 말투", "instruction": "진짜 mz세대같은 말투로" },
+  { "label": "초딩 말투", "instruction": "초등학생같은 말투로" }
+]
