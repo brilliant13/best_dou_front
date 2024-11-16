@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import tonesobj from "../data/tones.json";
 
 const PersonalizationModal = ({
   selectedContacts,
@@ -8,26 +9,14 @@ const PersonalizationModal = ({
   setConvertedTexts,
   onComplete,
 }) => {
+  // 톤 선택 버튼을 렌더링하기 위한 톤 목록
+  const tones = tonesobj;
+  console.log(selectedContacts);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [selectedTone, setSelectedTone] = useState("기본 말투로"); // 선택된 톤 상태
 
   const currentContact = selectedContacts[currentIndex];
-
-  // 톤 선택 버튼을 렌더링하기 위한 톤 목록
-  const tones = [
-    { label: "친근한 말투", instruction: "친근하고 다정한 말투로" },
-    { label: "격식있는 말투", instruction: "격식 있는 말투로" },
-    { label: "유쾌한 말투", instruction: "유쾌하고 밝은 말투로" },
-    { label: "정중한 말투", instruction: "정중하고 공손한 말투로" },
-    { label: "친구 말투", instruction: "친구한테 하는 말투로" },
-    { label: "힙합 말투", instruction: "힙합하는 사람 말투로" },
-    { label: "여자친구 말투", instruction: "여자친구한테 하는 말투로" },
-    { label: "오바마 말투", instruction: "오바마같은 말투로" },
-    { label: "아재 말투", instruction: "아재같은 말투로" },
-    { label: "mz 말투", instruction: "진짜 mz세대같은 말투로" },
-    { label: "초딩 말투", instruction: "초등학생같은 말투로" },
-  ];
 
   // handleToneSelection 함수 추가
   const handleToneSelection = (tone) => {
@@ -43,7 +32,15 @@ const PersonalizationModal = ({
       Math.min(prevIndex + 1, selectedContacts.length - 1)
     );
   };
-
+  // 현재 연락처의 기본 선택된 어조 설정
+  useEffect(() => {
+    if (currentContact) {
+      const defaultTone = tones.find(
+        (tone) => tone.label === currentContact.tone
+      );
+      setSelectedTone(defaultTone ? defaultTone.instruction : "기본 말투로");
+    }
+  }, [currentContact, tones]);
   const handleConvert = async () => {
     const textToConvert = convertedTexts[currentContact.id] || "";
     if (!textToConvert) {
