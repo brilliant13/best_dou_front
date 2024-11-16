@@ -11,16 +11,22 @@ const PersonalizationModal = ({
 }) => {
   // 톤 선택 버튼을 렌더링하기 위한 톤 목록
   const tones = tonesobj;
-  console.log(selectedContacts);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [selectedTone, setSelectedTone] = useState("기본 말투로"); // 선택된 톤 상태
+  const [selectedTones, setSelectedTones] = useState({}); // 선택된 톤 상태
 
   const currentContact = selectedContacts[currentIndex];
 
+  const { tag, memo } = currentContact; // 현재 선택된 연락처의 tag와 memo 가져오기
+
   // handleToneSelection 함수 추가
-  const handleToneSelection = (tone) => {
-    setSelectedTone(tone); // 선택된 톤 상태 업데이트
+  const handleToneSelection = (toneInstruction) => {
+    if (currentContact) {
+      setSelectedTones((prev) => ({
+        ...prev,
+        [currentContact.id]: toneInstruction,
+      }));
+    }
   };
 
   const handlePrev = () => {
@@ -35,19 +41,48 @@ const PersonalizationModal = ({
   // 현재 연락처의 기본 선택된 어조 설정
   useEffect(() => {
     if (currentContact) {
-      const defaultTone = tones.find(
-        (tone) => tone.label === currentContact.tone
-      );
-      setSelectedTone(defaultTone ? defaultTone.instruction : "기본 말투로");
+      // 이미 선택된 어조가 있으면 유지, 없으면 기본 어조로 초기화
+      setSelectedTones((prev) => {
+        if (prev[currentContact.id]) return prev; // 기존 선택값 유지
+        const defaultTone = tones.find(
+          (tone) => tone.label === currentContact.tone
+        );
+        return {
+          ...prev,
+          [currentContact.id]: defaultTone
+            ? defaultTone.instruction
+            : "기본 말투로",
+        };
+      });
     }
   }, [currentContact, tones]);
+
   const handleConvert = async () => {
     const textToConvert = convertedTexts[currentContact.id] || "";
     if (!textToConvert) {
       alert("변환할 텍스트를 입력하세요.");
       return;
     }
+    const selectedToneInstruction = selectedTones[currentContact.id];
+    const selectedToneData = tones.find(
+      (tone) => tone.instruction === selectedToneInstruction
+    );
+    if (!selectedToneData) {
+      alert("선택된 톤에 대한 데이터를 찾을 수 없습니다.");
+      return;
+    }
 
+    const { instruction, example } = selectedToneData;
+
+    const prompt = `
+    Please rewrite the following message in a tone that is ${instruction}.
+    The message should reflect the person's characteristics, notes, and the given example.
+
+    Original message: "${textToConvert}"
+    Tags: "${tag}"
+    Memo: "${memo}"
+    Example for this tone: "${example}"
+  `;
     setLoading(true);
     try {
       const response = await axios.post(
@@ -61,10 +96,10 @@ const PersonalizationModal = ({
             },
             {
               role: "user",
-              content: `Please rewrite the following message in a tone that is ${selectedTone}. Original message: "${textToConvert}".`,
+              content: prompt,
             },
           ],
-          max_tokens: 500,
+          max_tokens: 1000,
         },
         {
           headers: {
@@ -133,9 +168,13 @@ const PersonalizationModal = ({
                     style={{
                       ...styles.toneButton,
                       backgroundColor:
-                        selectedTone === tone.instruction ? "#007bff" : "#ccc",
+                        selectedTones[currentContact.id] === tone.instruction
+                          ? "#007bff"
+                          : "#ccc",
                       color:
-                        selectedTone === tone.instruction ? "white" : "black",
+                        selectedTones[currentContact.id] === tone.instruction
+                          ? "white"
+                          : "black",
                     }}
                     onClick={() => handleToneSelection(tone.instruction)}
                   >
