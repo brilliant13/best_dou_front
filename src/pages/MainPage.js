@@ -1,14 +1,26 @@
-import React, { useState } from "react";
-import ContactList from "../components/ContactList";
-import { useNavigate, useLocation } from "react-router-dom";
-import logo from "../assets/images/logo.png";
+// MainPage.js
+import React, { useState, useEffect } from 'react'; // useEffect 추가
+import ContactList from '../components/ContactList';
+import { useNavigate, useLocation } from 'react-router-dom'; // useLocation 추가
+import logo from '../assets/images/logo.png'; // 로고 이미지를 불러옵니다.
 
 const MainPage = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const messageFromState = location.state?.message || "";
-  const [message, setMessage] = useState(messageFromState);
-  const generatedImage = location.state?.generatedImage || null; // Retrieve the generated image URL
+  const location = useLocation(); // 메시지를 받을 위치 훅
+
+  // 상태 변수 초기화
+  const [message, setMessage] = useState('');
+  const [generatedImage, setGeneratedImage] = useState(null);
+
+  // location.state가 변경될 때마다 상태 업데이트
+  useEffect(() => {
+    if (location.state?.message) {
+      setMessage(location.state.message);
+    }
+    if (location.state?.generatedImage) {
+      setGeneratedImage(location.state.generatedImage);
+    }
+  }, [location.state]);
 
   return (
     <div style={styles.container}>
@@ -34,7 +46,7 @@ const MainPage = () => {
           ></textarea>
           <button
             style={styles.button}
-            onClick={() => navigate("/message-generation")}
+            onClick={() => navigate('/message-generation', { state: { message } })} // 상태 전달
           >
             문자 자동생성
           </button>
@@ -45,16 +57,14 @@ const MainPage = () => {
           <label style={styles.label}>이미지</label>
           <div style={styles.imageBox}>
             {generatedImage ? (
-              <img src={generatedImage} alt="Generated" style={{ maxWidth: "100%", maxHeight: "100%" }} />
+              <img src={generatedImage} alt="Generated" style={styles.generatedImage} />
             ) : (
-              "이미지가 여기에 표시됩니다."
+              '이미지가 여기에 표시됩니다.'
             )}
           </div>
           <button
             style={styles.button}
-            onClick={() =>
-              navigate("/image-generation", { state: { message } })
-            }
+            onClick={() => navigate('/image-generation', { state: { message } })} // 상태 전달
           >
             이미지 자동생성
           </button>
@@ -80,7 +90,6 @@ const MainPage = () => {
 };
 
 const styles = {
-  // 기존 스타일 정의
   container: {
     padding: "40px 20px",
     display: "flex",
@@ -155,6 +164,11 @@ const styles = {
     textAlign: "center",
     marginBottom: "10px",
     boxSizing: "border-box",
+  },
+  generatedImage: { // 추가된 스타일
+    maxWidth: '100%',
+    maxHeight: '100%',
+    objectFit: 'contain',
   },
   chatbotButton: {
     backgroundColor: "#76C7A3",
