@@ -111,11 +111,11 @@ const ContactList = ({
   ]);
 
   const generateMessagesForSelectedContacts = () => {
-    const texts = selectedContacts.reduce((acc, contactId) => {
-      acc[contactId] = convertedTexts[contactId] || message; // 기존 변환된 값 유지, 없으면 message로 초기화
+    const texts = selectedContacts.reduce((acc, contact) => {
+      acc[contact.id] = convertedTexts[contact.id] || message; // 기존 메시지가 있으면 유지, 없으면 기본 메시지 설정
       return acc;
     }, {});
-    setConvertedTexts(texts); // 각 수신자별 초기 메시지 저장
+    setConvertedTexts(texts);
   };
 
   const openModal = () => {
@@ -143,12 +143,33 @@ const ContactList = ({
 
   // 체크박스 선택 처리 함수
   const handleCheckboxChange = (contactId) => {
-    setSelectedContacts(
-      (prevSelected) =>
-        prevSelected.includes(contactId)
-          ? prevSelected.filter((id) => id !== contactId) // 선택 해제
-          : [...prevSelected, contactId] // 선택 추가
-    );
+    const contact = contacts.find((c) => c.id === contactId); // 선택된 연락처 찾기
+
+    setSelectedContacts((prevSelected) => {
+      const alreadySelected = prevSelected.some(
+        (selected) => selected.id === contactId
+      );
+
+      if (alreadySelected) {
+        // 선택 해제
+        const updatedContacts = prevSelected.filter(
+          (selected) => selected.id !== contactId
+        );
+        setConvertedTexts((prevTexts) => {
+          const updatedTexts = { ...prevTexts };
+          delete updatedTexts[contactId]; // 해당 ID의 메시지 삭제
+          return updatedTexts;
+        });
+        return updatedContacts;
+      } else {
+        // 선택 추가
+        setConvertedTexts((prevTexts) => ({
+          ...prevTexts,
+          [contact.id]: prevTexts[contact.id] || message, // 기존 메시지가 없으면 기본 메시지 추가
+        }));
+        return [...prevSelected, contact];
+      }
+    });
   };
 
   // 전체 체크박스 선택/해제 처리 함수
@@ -156,9 +177,21 @@ const ContactList = ({
     if (isAllChecked) {
       // 모든 선택 해제
       setSelectedContacts([]);
+      setConvertedTexts({}); // 모든 메시지 초기화
     } else {
       // 모든 연락처 선택
-      setSelectedContacts(filteredContacts.map((contact) => contact.id));
+      const allSelected = filteredContacts.map((contact) => contact);
+      setSelectedContacts(allSelected);
+
+      setConvertedTexts((prevTexts) => {
+        const newTexts = { ...prevTexts };
+        allSelected.forEach((contact) => {
+          if (!newTexts[contact.id]) {
+            newTexts[contact.id] = message; // 기본 메시지 추가
+          }
+        });
+        return newTexts;
+      });
     }
     setIsAllChecked(!isAllChecked); // 상태 반전
   };
@@ -257,9 +290,7 @@ const ContactList = ({
       {/* 모달 컴포넌트 호출 */}
       {isModalOpen && (
         <PersonalizationModal
-          selectedContacts={contacts.filter((contact) =>
-            selectedContacts.includes(contact.id)
-          )}
+          selectedContacts={selectedContacts} // 이미 객체 배열 형태
           closeModal={closeModal}
           convertedTexts={convertedTexts}
           setConvertedTexts={setConvertedTexts} // 수신자별 메시지를 업데이트
@@ -275,7 +306,9 @@ const ContactList = ({
                 {/* <input type="checkbox" style={styles.checkbox} /> */}
                 <input
                   type="checkbox"
-                  checked={selectedContacts.includes(contact.id)}
+                  checked={selectedContacts.some(
+                    (selected) => selected.id === contact.id
+                  )}
                   onChange={() => handleCheckboxChange(contact.id)}
                   style={styles.checkbox}
                 />

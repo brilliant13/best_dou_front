@@ -12,10 +12,8 @@ const MainPage = () => {
   const generatedImage = location.state?.generatedImage || null; // Retrieve the generated image URL
   const [convertedTexts, setConvertedTexts] = useState({}); // 수신자별 메시지 상태
   const [selectedContacts, setSelectedContacts] = useState([]); // 선택된 연락처 목록
-  const [currentContactIndex, setCurrentContactIndex] = useState(0);
+  const [currentContactIndex, setCurrentContactIndex] = useState(0); //현재 어떤 수신자인지 인덱스 표시
 
-  console.log(selectedContacts);
-  // console.log(convertedTexts);
   // 메시지에서 키워드를 추출하는 함수
   const extractKeywords = async (message) => {
     try {
@@ -104,14 +102,14 @@ const MainPage = () => {
               <textarea
                 style={styles.textArea}
                 value={
-                  convertedTexts[selectedContacts[currentContactIndex]] ||
+                  convertedTexts[selectedContacts[currentContactIndex]?.id] ||
                   message
                 }
                 onChange={(e) => {
                   const updatedMessage = e.target.value;
                   setConvertedTexts((prev) => ({
                     ...prev,
-                    [selectedContacts[currentContactIndex]]: updatedMessage,
+                    [selectedContacts[currentContactIndex]?.id]: updatedMessage,
                   }));
                 }}
               ></textarea>
@@ -216,6 +214,7 @@ const styles = {
     display: "flex",
     justifyContent: "space-between",
     marginTop: "10px",
+    gap: "20px", // 버튼 간격 추가
   },
   navButton: {
     backgroundColor: "#007BFF",
