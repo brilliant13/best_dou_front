@@ -45,7 +45,11 @@ const MainPage = () => {
           <label style={styles.label}>이미지</label>
           <div style={styles.imageBox}>
             {generatedImage ? (
-              <img src={generatedImage} alt="Generated" style={{ maxWidth: "100%", maxHeight: "100%" }} />
+              <img
+                src={generatedImage}
+                alt="Generated"
+                style={{ maxWidth: "100%", maxHeight: "100%" }}
+              />
             ) : (
               "이미지가 여기에 표시됩니다."
             )}
