@@ -2,16 +2,86 @@ import React, { useState } from "react";
 import ContactList from "../components/ContactList";
 import { useNavigate, useLocation } from "react-router-dom";
 import logo from "../assets/images/logo.png";
-
+import axios from "axios";
 const MainPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const messageFromState = location.state?.message || "";
   const [message, setMessage] = useState(messageFromState);
+  const generatedImage = location.state?.generatedImage || null;
+
+  // 메시지에서 키워드를 추출하는 함수
+  const extractKeywords = async (message) => {
+    try {
+      const prompt = `
+Please extract one single keyword in English from the following message that can be used for image generation.
+
+메시지: ${message}
+
+키워드:
+`;
+
+      const response = await axios.post(
+        "https://api.openai.com/v1/chat/completions",
+        {
+          model: "gpt-4",
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are an NLP expert. Extract exactly one relevant keyword in English from the provided message that can be used for image generation. The keyword must be concise and relevant.",
+            },
+            {
+              role: "user",
+              content: prompt,
+            },
+          ],
+          max_tokens: 100,
+          temperature: 0.5,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
+          },
+        }
+      );
+
+      const keywords = response.data.choices[0].message.content.trim();
+      return keywords.split(",").map((keyword) => keyword.trim());
+    } catch (err) {
+      console.error(err);
+      return [];
+    }
+  };
+
+  const handleImageGeneration = async () => {
+    if (!message.trim()) {
+      alert("메시지를 입력하세요.");
+      return;
+    }
+
+    try {
+      // 키워드 추출
+      const extractedKeywords = await extractKeywords(message);
+
+      if (extractedKeywords.length === 0) {
+        alert("키워드를 추출하지 못했습니다. 메시지를 확인해주세요.");
+        return;
+      }
+
+      const keyword = extractedKeywords[0];
+      console.log("추출된 키워드:", keyword);
+
+      navigate("/image-generation", { state: { message, keyword } });
+    } catch (error) {
+      console.error("키워드 추출 중 오류 발생:", error);
+      alert("키워드 추출에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
 
   return (
     <div style={styles.container}>
-      {/* 상단부: 로고, 제목, 설명 */}
       <div style={styles.topSection}>
         <img src={logo} alt="service-logo" style={styles.image} />
         <h1>문자 자동생성 서비스</h1>
@@ -20,19 +90,16 @@ const MainPage = () => {
         </p>
       </div>
 
-      {/* 중간 섹션: 문자 자동생성, 이미지 자동생성 */}
       <div style={styles.row}>
-        {/* 문자 자동생성 섹션 */}
         <div style={styles.section}>
           <label style={styles.label}>메시지</label>
-          <div
-            contentEditable
-            style={styles.fixedInput}
-            onInput={(e) => setMessage(e.target.innerText)}
+          {/* contentEditable 대신 textarea 사용 */}
+          <textarea
+            style={styles.textArea}
             placeholder="메시지를 입력하세요"
-          >
-            {message}
-          </div>
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+          ></textarea>
           <button
             style={styles.button}
             onClick={() => navigate("/message-generation")}
@@ -45,23 +112,24 @@ const MainPage = () => {
         <div style={styles.section}>
           <label style={styles.label}>이미지</label>
           <div style={styles.imageBox}>
-            <span style={styles.imageText}>이미지가 여기에 표시됩니다.</span>
+            {generatedImage ? (
+              <img
+                src={generatedImage}
+                alt="Generated"
+                style={{ maxWidth: "100%", maxHeight: "100%" }}
+              />
+            ) : (
+              "이미지가 여기에 표시됩니다."
+            )}
           </div>
-          <button
-            style={styles.button}
-            onClick={() =>
-              navigate("/image-generation", { state: { message } })
-            }
-          >
+          <button style={styles.button} onClick={handleImageGeneration}>
             이미지 자동생성
           </button>
         </div>
       </div>
 
-      {/* 주소록 */}
       <ContactList message={message} setMessage={setMessage} />
 
-      {/* 하단부: 챗봇 사용하기, 전송하기 버튼 */}
       <div style={styles.container}>
         <button
           style={styles.chatbotButton}
@@ -110,9 +178,9 @@ const styles = {
     borderRadius: "8px",
     minWidth: "450px",
     boxSizing: "border-box",
-    backgroundColor: "#F9FAFB", // 박스 배경 색상
+    backgroundColor: "#F9FAFB",
     boxShadow: "0 1px 5px rgba(0, 0, 0, 0.1)",
-    textAlign: "center", // 텍스트 중앙 정렬
+    textAlign: "center",
   },
   button: {
     backgroundColor: "#4A90E2",
@@ -123,7 +191,7 @@ const styles = {
     borderRadius: "8px",
     cursor: "pointer",
     marginTop: "20px",
-    width: "100%", // 버튼 크기 맞추기
+    width: "100%",
   },
   label: {
     fontSize: "18px",
@@ -131,9 +199,9 @@ const styles = {
     marginBottom: "10px",
     color: "#4A90E2",
   },
-  fixedInput: {
+  textarea: {
     width: "100%",
-    height: "400px", // 높이 줄이기
+    height: "400px",
     padding: "20px",
     fontSize: "16px",
     border: "1px solid #4A90E2",
@@ -146,14 +214,14 @@ const styles = {
     outline: "none",
     marginBottom: "10px",
     transition: "border-color 0.3s",
-    textAlign: "center", // 입력된 메시지를 중앙에 정렬
-    wordWrap: "break-word", // 단어가 길어지면 줄 바꿈
-    overflow: "hidden", // 텍스트가 넘치지 않도록 처리
-    textOverflow: "ellipsis", // 텍스트 넘칠 경우 "..."
+    textAlign: "center",
+    wordWrap: "break-word",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
   },
   imageBox: {
     width: "100%",
-    height: "400px", // 높이 맞추기
+    height: "400px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -163,14 +231,12 @@ const styles = {
     textAlign: "center",
     marginBottom: "10px",
     boxSizing: "border-box",
-    fontSize: "20px", // 이미지 박스 내 텍스트 크기 조정
-    color: "#A9A9A9", // 이미지 박스 내 텍스트 색상
-    position: "relative",
+    fontSize: "20px",
+    color: "#A9A9A9",
   },
   imageText: {
-    fontSize: "18px", // 텍스트 크기 조정
-    color: "#4A90E2", // 강조된 텍스트 색상
-    //textShadow: "0 0 5px rgba(0,0,0,0.3)", // 텍스트에 그림자 효과 추가
+    fontSize: "18px",
+    color: "#4A90E2",
   },
   chatbotButton: {
     backgroundColor: "#4A90E2",

@@ -3,8 +3,14 @@ import React, { useState } from "react";
 import { FaTrash, FaChevronUp, FaChevronDown } from "react-icons/fa"; // 화살표 아이콘 추가
 import PersonalizationModal from "./PersonalizationModal"; // 모달 컴포넌트 임포트
 import { useNavigate } from "react-router-dom"; // 페이지 이동을 위한 useNavigate 사용
+import tonesobj from "../data/tones.json"; // JSON 파일 import
 
 const ContactList = ({ message, setMessage }) => {
+  const tones = tonesobj;
+  // 특정 연락처의 어조 선택 함수
+  const handleToneSelection = (tone) => {
+    setEditData((prevData) => ({ ...prevData, tone: tone }));
+  };
   const navigate = useNavigate(); // navigate 훅 선언
 
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열림/닫힘 상태
@@ -45,7 +51,7 @@ const ContactList = ({ message, setMessage }) => {
       group: "찐친",
       tag: "20학번 동기. 군대 제대함. 여자친구 있음",
       memo: "시험 기간마다 항상 같이 새벽까지 스터디를 했던 친구.",
-      tone: "따뜻한 말투. 진지하지 않게. 장난스럽게. 사투리 추가.",
+      tone: tones[0].label,
     },
     {
       id: 2,
@@ -57,7 +63,7 @@ const ContactList = ({ message, setMessage }) => {
       group: "찐친",
       tag: "20학번 동기",
       memo: "친절하고 매사에 성실함",
-      tone: "차분한 말투. 부드럽게.",
+      tone: tones[1].label,
     },
     {
       id: 3,
@@ -69,7 +75,7 @@ const ContactList = ({ message, setMessage }) => {
       group: "찐친",
       tag: "20학번 동기",
       memo: "항상 재밌는 분위기 메이커",
-      tone: "유머러스하게. 가볍게.",
+      tone: tones[1].label,
     },
     {
       id: 4,
@@ -81,7 +87,7 @@ const ContactList = ({ message, setMessage }) => {
       group: "찐친",
       tag: "친절한 사람",
       memo: "항상 웃음 짓는 친구",
-      tone: "따뜻하게. 긍정적으로.",
+      tone: tones[1].label,
     },
     {
       id: 5,
@@ -93,7 +99,7 @@ const ContactList = ({ message, setMessage }) => {
       group: "찐친",
       tag: "농담을 잘함",
       memo: "연락을 자주 하는 친구",
-      tone: "활발하게. 유쾌하게.",
+      tone: tones[1].label,
     },
     {
       id: 6,
@@ -105,7 +111,7 @@ const ContactList = ({ message, setMessage }) => {
       group: "찐친",
       tag: "조용하고 예의 바름",
       memo: "공부를 열심히 함",
-      tone: "조용하게. 정중하게.",
+      tone: tones[1].label,
     },
     {
       id: 7,
@@ -117,7 +123,7 @@ const ContactList = ({ message, setMessage }) => {
       group: "동아리",
       tag: "활발한 성격",
       memo: "다양한 취미를 가진 친구",
-      tone: "자신감 있게. 에너제틱하게.",
+      tone: tones[1].label,
     },
   ]);
 
@@ -323,7 +329,7 @@ const ContactList = ({ message, setMessage }) => {
                           name="tag"
                           value={editData.tag}
                           onChange={handleInputChange}
-                          style={{ width: "1000px", height: "30px" }}
+                          style={{ width: "500px", height: "30px" }}
                         />
                       </p>
                       <p>
@@ -332,18 +338,33 @@ const ContactList = ({ message, setMessage }) => {
                           name="memo"
                           value={editData.memo}
                           onChange={handleInputChange}
-                          style={{ width: "1000px", height: "30px" }}
+                          style={{ width: "500px", height: "30px" }}
                         />
                       </p>
                       <p>
-                        <strong>어조:</strong>{" "}
-                        <input
-                          name="tone"
-                          value={editData.tone}
-                          onChange={handleInputChange}
-                          style={{ width: "1000px", height: "30px" }}
-                        />
+                        <strong>어조 선택:</strong>
                       </p>
+                      <div style={styles.toneButtons}>
+                        {tones.map((tone) => (
+                          <button
+                            key={tone.label}
+                            onClick={() => handleToneSelection(tone.label)}
+                            style={{
+                              ...styles.toneButton,
+                              backgroundColor:
+                                editData.tone === tone.label
+                                  ? "#007bff"
+                                  : "#ccc",
+                              color:
+                                editData.tone === tone.label
+                                  ? "white"
+                                  : "black",
+                            }}
+                          >
+                            {tone.label}
+                          </button>
+                        ))}
+                      </div>
                     </>
                   ) : (
                     <>
@@ -528,6 +549,18 @@ const styles = {
 
   checkbox: {
     marginRight: "10px",
+  },
+  toneButton: {
+    padding: "8px 10px",
+    borderRadius: "5px",
+    border: "none",
+    cursor: "pointer",
+    transition: "background-color 0.3s",
+  },
+  toneButtons: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "5px",
   },
 };
 
