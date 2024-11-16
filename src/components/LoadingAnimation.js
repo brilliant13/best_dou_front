@@ -10,7 +10,8 @@ const LoadingAnimation = () => {
         autoplay
         loop
         src={animationData}
-        style={{ height: '150px', width: '150px' }}
+        style={{ 
+            backgroundColor: "transparent",  height: '250px', width: '250px' }}
       />
     </div>
   );
@@ -23,7 +24,7 @@ const styles = {
     left: 0,
     width: '100%',
     height: '100%',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
