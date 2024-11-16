@@ -1,19 +1,17 @@
-// ImageGeneration.js
 import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const ImageGeneration = () => {
     const location = useLocation();
-    const navigate = useNavigate();
-    const [inputText, setInputText] = useState(location.state?.message || ''); // 전달된 메시지를 받아오고, 수정 가능하도록 상태 관리
+    const navigate = useNavigate(); // Define navigate
+    const [inputText, setInputText] = useState(location.state?.message || ''); 
     const [style, setStyle] = useState(null);
     const [subject, setSubject] = useState(null);
     const [emotion, setEmotion] = useState(null);
     const [background, setBackground] = useState(null);
-    const [generatedImage, setGeneratedImage] = useState(null); // 생성된 이미지 상태
-    const [isButtonDisabled, setIsButtonDisabled] = useState(false); // 버튼 활성화 상태
+    const [generatedImage, setGeneratedImage] = useState(null); 
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false); 
 
-    // 각 카테고리를 영어로 매핑하는 함수
     const translateCategory = (category, selection) => {
         const translations = {
             style: {
@@ -44,12 +42,10 @@ const ImageGeneration = () => {
         return translations[category][selection];
     };
 
-    // 입력 값 변경 핸들러
     const handleInputChange = (e) => {
         setInputText(e.target.value);
     };
 
-    // 이미지 생성을 요청하는 함수
     const handleSubmit = () => {
         if (!style || !subject || !emotion || !background) {
             alert("모든 카테고리에서 최소한 한 개의 옵션을 선택해야 합니다.");
@@ -103,7 +99,6 @@ const ImageGeneration = () => {
     return (
         <div style={styles.container}>
             <div style={styles.row}>
-                {/* 왼쪽 섹션: 메시지, 카테고리 선택 및 이미지 생성 버튼 */}
                 <div style={styles.column}>
                     <h2>발송 목적 및 내용</h2>
                     
@@ -114,7 +109,6 @@ const ImageGeneration = () => {
                         style={styles.textArea}
                     />
 
-                    {/* 카테고리 선택 섹션 */}
                     <div style={styles.keywordContainer}>
                         <h3>주요 키워드 제시</h3>
                         <div style={styles.keywordButtons}>
@@ -130,7 +124,6 @@ const ImageGeneration = () => {
                     </button>
                 </div>
 
-                {/* 오른쪽 섹션: 생성 결과 */}
                 <div style={styles.column}>
                     <h2>생성결과</h2>
                     <div style={styles.imageDisplay}>
@@ -167,7 +160,7 @@ const CategorySelector = ({ label, options, selected, onSelect }) => (
             <button
                 key={option}
                 onClick={() => onSelect(option)}
-                style={{    // 선택 했을 때 색 변경
+                style={{
                     ...styles.keywordButton,
                     backgroundColor: selected === option ? '#007bff' : '#e1e5f2',
                     color: selected === option ? 'white' : 'black',

@@ -1,9 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const PersonalizationModal = ({ selectedContacts, closeModal, onComplete }) => {
+const PersonalizationModal = ({
+  selectedContacts,
+  closeModal,
+  convertedTexts,
+  setConvertedTexts,
+  onComplete,
+}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [convertedTexts, setConvertedTexts] = useState({});
   const [loading, setLoading] = useState(false);
   const [selectedTone, setSelectedTone] = useState("기본 말투로"); // 선택된 톤 상태
 
@@ -20,22 +25,23 @@ const PersonalizationModal = ({ selectedContacts, closeModal, onComplete }) => {
     { label: "여자친구 말투", instruction: "여자친구한테 하는 말투로" },
     { label: "오바마 말투", instruction: "오바마같은 말투로" },
     { label: "아재 말투", instruction: "아재같은 말투로" },
+    { label: "mz 말투", instruction: "진짜 mz세대같은 말투로" },
+    { label: "초딩 말투", instruction: "초등학생같은 말투로" },
   ];
 
+  // handleToneSelection 함수 추가
   const handleToneSelection = (tone) => {
-    setSelectedTone(tone);
+    setSelectedTone(tone); // 선택된 톤 상태 업데이트
   };
 
   const handlePrev = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-    }
+    setCurrentIndex((prevIndex) => Math.max(prevIndex - 1, 0));
   };
 
   const handleNext = () => {
-    if (currentIndex < selectedContacts.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    }
+    setCurrentIndex((prevIndex) =>
+      Math.min(prevIndex + 1, selectedContacts.length - 1)
+    );
   };
 
   const handleConvert = async () => {
@@ -71,6 +77,7 @@ const PersonalizationModal = ({ selectedContacts, closeModal, onComplete }) => {
         }
       );
 
+      //ContactList의 convertedTexts값 변경
       setConvertedTexts((prev) => ({
         ...prev,
         [currentContact.id]: response.data.choices[0].message.content.trim(),
