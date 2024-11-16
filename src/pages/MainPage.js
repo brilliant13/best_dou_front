@@ -1,14 +1,13 @@
-//메인 페이지
-import React, { useState } from "react"; // useState 불러오기
+import React, { useState } from "react";
 import ContactList from "../components/ContactList";
-import { useNavigate, useLocation } from "react-router-dom"; // useLocation 추가
-import logo from "../assets/images/logo.png"; // 로고 이미지를 불러옵니다.
+import { useNavigate, useLocation } from "react-router-dom";
+import logo from "../assets/images/logo.png";
 
 const MainPage = () => {
   const navigate = useNavigate();
-  const location = useLocation(); // 메시지를 받을 위치 훅
-  const messageFromState = location.state?.message || ""; // 전달된 메시지 값
-  const [message, setMessage] = useState(messageFromState); // 전달된 메시지 초기값으로 설정
+  const location = useLocation();
+  const messageFromState = location.state?.message || "";
+  const [message, setMessage] = useState(messageFromState);
 
   return (
     <div style={styles.container}>
@@ -26,12 +25,14 @@ const MainPage = () => {
         {/* 문자 자동생성 섹션 */}
         <div style={styles.section}>
           <label style={styles.label}>메시지</label>
-          <textarea
-            style={styles.textArea}
+          <div
+            contentEditable
+            style={styles.fixedInput}
+            onInput={(e) => setMessage(e.target.innerText)}
             placeholder="메시지를 입력하세요"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)} // 메시지 업데이트
-          ></textarea>
+          >
+            {message}
+          </div>
           <button
             style={styles.button}
             onClick={() => navigate("/message-generation")}
@@ -43,12 +44,14 @@ const MainPage = () => {
         {/* 이미지 자동생성 섹션 */}
         <div style={styles.section}>
           <label style={styles.label}>이미지</label>
-          <div style={styles.imageBox}>이미지가 여기에 표시됩니다.</div>
+          <div style={styles.imageBox}>
+            <span style={styles.imageText}>이미지가 여기에 표시됩니다.</span>
+          </div>
           <button
             style={styles.button}
             onClick={() =>
               navigate("/image-generation", { state: { message } })
-            } // 상태 전달
+            }
           >
             이미지 자동생성
           </button>
@@ -60,7 +63,6 @@ const MainPage = () => {
 
       {/* 하단부: 챗봇 사용하기, 전송하기 버튼 */}
       <div style={styles.container}>
-        {/* "챗봇 사용하기" 버튼 */}
         <button
           style={styles.chatbotButton}
           onClick={() => navigate("/chatbot")}
@@ -68,7 +70,6 @@ const MainPage = () => {
           챗봇 사용하기
         </button>
 
-        {/* "전송하기" 버튼 */}
         <button style={styles.sendButton}>전송하기</button>
       </div>
     </div>
@@ -76,8 +77,9 @@ const MainPage = () => {
 };
 
 const styles = {
-  // 기존 스타일 정의
   container: {
+    margin: "85px",
+    backgroundColor: "white",
     padding: "40px 20px",
     display: "flex",
     flexDirection: "column",
@@ -105,14 +107,15 @@ const styles = {
     alignItems: "center",
     flex: 1,
     padding: "30px",
-    border: "1px solid #ccc",
     borderRadius: "8px",
-    backgroundColor: "#f9f9f9",
     minWidth: "450px",
     boxSizing: "border-box",
+    backgroundColor: "#F9FAFB", // 박스 배경 색상
+    boxShadow: "0 1px 5px rgba(0, 0, 0, 0.1)",
+    textAlign: "center", // 텍스트 중앙 정렬
   },
   button: {
-    backgroundColor: "#0086BF",
+    backgroundColor: "#4A90E2",
     color: "white",
     border: "none",
     padding: "15px 30px",
@@ -120,40 +123,57 @@ const styles = {
     borderRadius: "8px",
     cursor: "pointer",
     marginTop: "20px",
-    width: "100%",
+    width: "100%", // 버튼 크기 맞추기
   },
   label: {
     fontSize: "18px",
     fontWeight: "bold",
     marginBottom: "10px",
-    alignSelf: "flex-start",
+    color: "#4A90E2",
   },
-  textArea: {
+  fixedInput: {
     width: "100%",
-    height: "500px",
-    padding: "10px",
-    fontSize: "14px",
-    border: "1px solid #ccc",
-    borderRadius: "4px",
-    resize: "vertical",
-    marginBottom: "10px",
+    height: "400px", // 높이 줄이기
+    padding: "20px",
+    fontSize: "16px",
+    border: "1px solid #4A90E2",
+    borderRadius: "8px",
+    resize: "none",
     boxSizing: "border-box",
+    backgroundColor: "#FFFFFF",
+    color: "#333",
+    lineHeight: "1.5",
+    outline: "none",
+    marginBottom: "10px",
+    transition: "border-color 0.3s",
+    textAlign: "center", // 입력된 메시지를 중앙에 정렬
+    wordWrap: "break-word", // 단어가 길어지면 줄 바꿈
+    overflow: "hidden", // 텍스트가 넘치지 않도록 처리
+    textOverflow: "ellipsis", // 텍스트 넘칠 경우 "..."
   },
   imageBox: {
     width: "100%",
-    height: "500px",
+    height: "400px", // 높이 맞추기
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    border: "1px solid #ccc",
-    backgroundColor: "#e0e0e0",
+    border: "1px solid #4A90E2",
+    backgroundColor: "#ffffff",
     borderRadius: "4px",
     textAlign: "center",
     marginBottom: "10px",
     boxSizing: "border-box",
+    fontSize: "20px", // 이미지 박스 내 텍스트 크기 조정
+    color: "#A9A9A9", // 이미지 박스 내 텍스트 색상
+    position: "relative",
+  },
+  imageText: {
+    fontSize: "18px", // 텍스트 크기 조정
+    color: "#4A90E2", // 강조된 텍스트 색상
+    //textShadow: "0 0 5px rgba(0,0,0,0.3)", // 텍스트에 그림자 효과 추가
   },
   chatbotButton: {
-    backgroundColor: "#76C7A3",
+    backgroundColor: "#4A90E2",
     color: "white",
     border: "none",
     padding: "20px 40px",
@@ -163,7 +183,7 @@ const styles = {
     marginTop: "20px",
   },
   sendButton: {
-    backgroundColor: "#007BFF",
+    backgroundColor: "#4A90E2",
     color: "white",
     border: "none",
     padding: "15px 30px",
