@@ -53,7 +53,7 @@ const MessageGenerationPage = () => {
           messages: [
             {
               role: 'system',
-              content: '당신은 친절한 도우미입니다.',
+              content: '당신은 메시지 작성 전문가입니다. 요청된 키워드와 내용을 기반으로 명확하고 적절한 메시지를 생성합니다. 메시지는 사용자가 원하는 목적에 맞게 공식적이거나 비공식적인 톤을 반영해야 합니다.',
             },
             {
               role: 'user',

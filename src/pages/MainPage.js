@@ -2,17 +2,84 @@ import React, { useState } from "react";
 import ContactList from "../components/ContactList";
 import { useNavigate, useLocation } from "react-router-dom";
 import logo from "../assets/images/logo.png";
+import axios from "axios";
 
 const MainPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const messageFromState = location.state?.message || "";
   const [message, setMessage] = useState(messageFromState);
-  const generatedImage = location.state?.generatedImage || null; // Retrieve the generated image URL
+  const generatedImage = location.state?.generatedImage || null;
+
+  const extractKeywords = async (message) => {
+    try {
+      const prompt = `
+Please extract one single keyword in English from the following message that can be used for image generation.
+
+메시지: ${message}
+
+키워드:
+`;
+      const response = await axios.post(
+        "https://api.openai.com/v1/chat/completions",
+        {
+          model: "gpt-4",
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are an NLP expert. Extract exactly one relevant keyword in English from the provided message that can be used for image generation. The keyword must be concise and relevant.",
+            },
+            {
+              role: "user",
+              content: prompt,
+            },
+          ],
+          max_tokens: 100,
+          temperature: 0.5,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
+          },
+        }
+      );
+
+      const keywords = response.data.choices[0].message.content.trim();
+      return keywords.split(",").map((keyword) => keyword.trim());
+    } catch (err) {
+      console.error(err);
+      return [];
+    }
+  };
+
+  const handleImageGeneration = async () => {
+    if (!message.trim()) {
+      alert("메시지를 입력하세요.");
+      return;
+    }
+
+    try {
+      const extractedKeywords = await extractKeywords(message);
+
+      if (extractedKeywords.length === 0) {
+        alert("키워드를 추출하지 못했습니다. 메시지를 확인해주세요.");
+        return;
+      }
+
+      const keyword = extractedKeywords[0];
+      console.log("추출된 키워드:", keyword);
+
+      navigate("/image-generation", { state: { message, keyword } });
+    } catch (error) {
+      console.error("키워드 추출 중 오류 발생:", error);
+      alert("키워드 추출에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
 
   return (
     <div style={styles.container}>
-      {/* 상단부: 로고, 제목, 설명 */}
       <div style={styles.topSection}>
         <img src={logo} alt="service-logo" style={styles.image} />
         <h1>문자 자동생성 서비스</h1>
@@ -21,9 +88,7 @@ const MainPage = () => {
         </p>
       </div>
 
-      {/* 중간 섹션: 문자 자동생성, 이미지 자동생성 */}
       <div style={styles.row}>
-        {/* 문자 자동생성 섹션 */}
         <div style={styles.section}>
           <label style={styles.label}>메시지</label>
           <textarea
@@ -40,31 +105,27 @@ const MainPage = () => {
           </button>
         </div>
 
-        {/* 이미지 자동생성 섹션 */}
         <div style={styles.section}>
           <label style={styles.label}>이미지</label>
           <div style={styles.imageBox}>
             {generatedImage ? (
-              <img src={generatedImage} alt="Generated" style={{ maxWidth: "100%", maxHeight: "100%" }} />
+              <img
+                src={generatedImage}
+                alt="Generated"
+                style={{ maxWidth: "100%", maxHeight: "100%" }}
+              />
             ) : (
               "이미지가 여기에 표시됩니다."
             )}
           </div>
-          <button
-            style={styles.button}
-            onClick={() =>
-              navigate("/image-generation", { state: { message } })
-            }
-          >
+          <button style={styles.button} onClick={handleImageGeneration}>
             이미지 자동생성
           </button>
         </div>
       </div>
 
-      {/* 주소록 */}
       <ContactList message={message} setMessage={setMessage} />
 
-      {/* 하단부: 챗봇 사용하기, 전송하기 버튼 */}
       <div style={styles.container}>
         <button
           style={styles.chatbotButton}
@@ -80,8 +141,9 @@ const MainPage = () => {
 };
 
 const styles = {
-  // 기존 스타일 정의
   container: {
+    margin: "85px",
+    backgroundColor: "white",
     padding: "40px 20px",
     display: "flex",
     flexDirection: "column",
@@ -109,14 +171,15 @@ const styles = {
     alignItems: "center",
     flex: 1,
     padding: "30px",
-    border: "1px solid #ccc",
     borderRadius: "8px",
-    backgroundColor: "#f9f9f9",
     minWidth: "450px",
     boxSizing: "border-box",
+    backgroundColor: "#F9FAFB",
+    boxShadow: "0 1px 5px rgba(0, 0, 0, 0.1)",
+    textAlign: "center",
   },
   button: {
-    backgroundColor: "#0086BF",
+    backgroundColor: "#4A90E2",
     color: "white",
     border: "none",
     padding: "15px 30px",
@@ -130,34 +193,40 @@ const styles = {
     fontSize: "18px",
     fontWeight: "bold",
     marginBottom: "10px",
-    alignSelf: "flex-start",
+    color: "#4A90E2",
   },
   textArea: {
     width: "100%",
-    height: "500px",
-    padding: "10px",
-    fontSize: "14px",
-    border: "1px solid #ccc",
-    borderRadius: "4px",
-    resize: "vertical",
-    marginBottom: "10px",
+    height: "400px", // 이미지 박스 크기와 동일하게 조정
+    padding: "20px",
+    fontSize: "16px",
+    border: "1px solid #4A90E2",
+    borderRadius: "8px",
+    resize: "none",
     boxSizing: "border-box",
+    backgroundColor: "#FFFFFF",
+    color: "#333",
+    lineHeight: "1.5",
+    outline: "none",
+    marginBottom: "10px",
   },
   imageBox: {
     width: "100%",
-    height: "500px",
+    height: "400px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    border: "1px solid #ccc",
-    backgroundColor: "#e0e0e0",
+    border: "1px solid #4A90E2",
+    backgroundColor: "#ffffff",
     borderRadius: "4px",
     textAlign: "center",
     marginBottom: "10px",
     boxSizing: "border-box",
+    fontSize: "20px",
+    color: "#A9A9A9",
   },
   chatbotButton: {
-    backgroundColor: "#76C7A3",
+    backgroundColor: "#4A90E2",
     color: "white",
     border: "none",
     padding: "20px 40px",
@@ -167,7 +236,7 @@ const styles = {
     marginTop: "20px",
   },
   sendButton: {
-    backgroundColor: "#007BFF",
+    backgroundColor: "#4A90E2",
     color: "white",
     border: "none",
     padding: "15px 30px",
