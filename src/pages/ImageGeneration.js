@@ -55,18 +55,18 @@ const ImageGeneration = () => {
             alert("모든 카테고리에서 최소한 한 개의 옵션을 선택해야 합니다.");
             return;
         }
-
+    
         setIsButtonDisabled(true); // 버튼 비활성화
-
+    
         // 각 카테고리의 선택을 영어로 변환
         const requestData = {
             style: translateCategory('style', style),
             subject: translateCategory('subject', subject),
             emotion: translateCategory('emotion', emotion),
             background: translateCategory('background', background),
-            message: inputText
+            message: inputText,
         };
-
+    
         fetch("http://localhost:8080/api/images/generate", {
             method: "POST",
             headers: {
@@ -74,21 +74,32 @@ const ImageGeneration = () => {
             },
             body: JSON.stringify(requestData),
         })
-        .then((response) => response.json())
-        .then((data) => {
-            if (data.status === "success") {
-                setGeneratedImage(data.imageUrl);
-                alert(data.message);  // 성공 메시지 표시
-            } else {
-                alert(data.message);  // 오류 메시지 표시
-            }
-        })
-        .catch((error) => console.error("Error:", error))
-        .finally(() => {
-            setTimeout(() => setIsButtonDisabled(false), 10000); // 10초 후 버튼 재활성화
-        });
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`API 요청 실패: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log("API 응답 데이터:", data); // API 응답 확인
+    
+                if (data.status === "success") {
+                    // Base64 데이터를 처리
+                    setGeneratedImage(`data:image/png;base64,${data.imageBase64}`);
+                    alert(data.message); // 성공 메시지 표시
+                } else {
+                    alert(data.message); // 오류 메시지 표시
+                }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                alert("이미지 생성 중 오류가 발생했습니다. 다시 시도하세요.");
+            })
+            .finally(() => {
+                setTimeout(() => setIsButtonDisabled(false), 10000); // 10초 후 버튼 재활성화
+            });
     };
-
+    
     return (
         <div style={styles.container}>
             <div style={styles.row}>
