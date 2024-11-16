@@ -5,14 +5,21 @@ import PersonalizationModal from "./PersonalizationModal"; // 모달 컴포넌�
 import { useNavigate } from "react-router-dom"; // 페이지 이동을 위한 useNavigate 사용
 import tonesobj from "../data/tones.json"; // JSON 파일 import
 
-const ContactList = ({ message, setMessage }) => {
+const ContactList = ({
+  message,
+  setMessage,
+  convertedTexts,
+  setConvertedTexts,
+  selectedContacts,
+  setSelectedContacts,
+}) => {
   const tones = tonesobj;
   const navigate = useNavigate(); // navigate 훅 선언
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열림/닫힘 상태
-  const [convertedTexts, setConvertedTexts] = useState({}); // 수신자별 메시지 상태
+  // const [convertedTexts, setConvertedTexts] = useState({}); // 수신자별 메시지 상태
   const [activeTab, setActiveTab] = useState("찐친");
   const [expandedContactId, setExpandedContactId] = useState(null); // 세부사항이 확장된 연락처 ID
-  const [selectedContacts, setSelectedContacts] = useState([]); // 선택된 연락처 목록
+  // const [selectedContacts, setSelectedContacts] = useState([]); // 선택된 연락처 목록
   const [isAllChecked, setIsAllChecked] = useState(false); // 전체 선택 상태를 저장하는 변수
   const [isEditing, setIsEditing] = useState(null); // 수정 모드 상태 저장
   const [editData, setEditData] = useState({ tag: "", memo: "", tone: "" });
@@ -105,7 +112,7 @@ const ContactList = ({ message, setMessage }) => {
 
   const generateMessagesForSelectedContacts = () => {
     const texts = selectedContacts.reduce((acc, contactId) => {
-      acc[contactId] = message; // 순수 메시지만 초기 메시지로 설정
+      acc[contactId] = convertedTexts[contactId] || message; // 기존 변환된 값 유지, 없으면 message로 초기화
       return acc;
     }, {});
     setConvertedTexts(texts); // 각 수신자별 초기 메시지 저장

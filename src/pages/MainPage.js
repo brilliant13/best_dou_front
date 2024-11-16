@@ -10,7 +10,11 @@ const MainPage = () => {
   const messageFromState = location.state?.message || "";
   const [message, setMessage] = useState(messageFromState);
   const generatedImage = location.state?.generatedImage || null; // Retrieve the generated image URL
+  const [convertedTexts, setConvertedTexts] = useState({}); // 수신자별 메시지 상태
+  const [selectedContacts, setSelectedContacts] = useState([]); // 선택된 연락처 목록
 
+  console.log(selectedContacts);
+  console.log(convertedTexts);
   // 메시지에서 키워드를 추출하는 함수
   const extractKeywords = async (message) => {
     try {
@@ -135,7 +139,14 @@ const MainPage = () => {
       </div>
 
       {/* 주소록 */}
-      <ContactList message={message} setMessage={setMessage} />
+      <ContactList
+        message={message}
+        setMessage={setMessage}
+        convertedTexts={convertedTexts}
+        setConvertedTexts={setConvertedTexts}
+        selectedContacts={selectedContacts}
+        setSelectedContacts={setSelectedContacts}
+      />
 
       {/* 하단부: 챗봇 사용하기, 전송하기 버튼 */}
       <div style={styles.container}>
