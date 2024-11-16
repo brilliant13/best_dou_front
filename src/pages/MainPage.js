@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import ContactList from "../components/ContactList";
 import { useNavigate, useLocation } from "react-router-dom";
 import logo from "../assets/images/logo.png";
-import axios from 'axios';
-
+import axios from "axios";
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -16,12 +15,12 @@ const MainPage = () => {
   const extractKeywords = async (message) => {
     try {
       const prompt = `
-Please extract one single keyword in English from the following message that can be used for image generation.
+      Please extract one single keyword in English from the following message that can be used for image generation.
 
-메시지: ${message}
+      메시지: ${message}
 
-키워드:
-`;
+      키워드:
+    `;
 
       const response = await axios.post(
         "https://api.openai.com/v1/chat/completions",
