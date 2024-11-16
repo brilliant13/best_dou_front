@@ -58,6 +58,7 @@ const ImageGeneration = () => {
         // 각 카테고리의 선택을 영어로 변환
         const requestData = {
             style: translateCategory('style', style),
+            keyword: keyword,
             subject: translateCategory('subject', subject),
             emotion: translateCategory('emotion', emotion),
             background: translateCategory('background', background),
