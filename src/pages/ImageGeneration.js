@@ -5,6 +5,7 @@ const ImageGeneration = () => {
     const location = useLocation();
     const navigate = useNavigate(); // Define navigate
     const [inputText, setInputText] = useState(location.state?.message || ''); 
+    const [keyword] = useState(location.state?.keyword || ''); // 전달받은 키워드
     const [style, setStyle] = useState(null);
     const [subject, setSubject] = useState(null);
     const [emotion, setEmotion] = useState(null);
@@ -101,6 +102,14 @@ const ImageGeneration = () => {
             <div style={styles.row}>
                 <div style={styles.column}>
                     <h2>발송 목적 및 내용</h2>
+
+                    {/* 전달받은 키워드 표시 */}
+                    {inputText && (
+                        <div style={styles.selectedKeyword}>
+                            <h3>추출된 키워드:</h3>
+                            <p>{keyword}</p>
+                        </div>
+                    )}
                     
                     <textarea
                         placeholder="text 입력"
@@ -229,6 +238,17 @@ const styles = {
         border: 'none',
         borderRadius: '8px',
     },
+    selectedKeyword: {
+        marginBottom: '20px',
+        padding: '10px',
+        backgroundColor: '#f4f4f9',
+        borderRadius: '8px',
+        border: '1px solid #ddd',
+        fontSize: '16px',
+        color: '#333',
+        textAlign: 'center',
+    },
+
     imageDisplay: {
         flex: 1,
         display: 'flex',

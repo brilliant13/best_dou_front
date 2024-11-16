@@ -1,26 +1,89 @@
-// MainPage.js
-import React, { useState, useEffect } from 'react'; // useEffect 추가
-import ContactList from '../components/ContactList';
-import { useNavigate, useLocation } from 'react-router-dom'; // useLocation 추가
-import logo from '../assets/images/logo.png'; // 로고 이미지를 불러옵니다.
+import React, { useState } from "react";
+import ContactList from "../components/ContactList";
+import { useNavigate, useLocation } from "react-router-dom";
+import logo from "../assets/images/logo.png";
+import axios from 'axios';
+
 
 const MainPage = () => {
   const navigate = useNavigate();
-  const location = useLocation(); // 메시지를 받을 위치 훅
+  const location = useLocation();
+  const messageFromState = location.state?.message || "";
+  const [message, setMessage] = useState(messageFromState);
+  const generatedImage = location.state?.generatedImage || null; // Retrieve the generated image URL
 
-  // 상태 변수 초기화
-  const [message, setMessage] = useState('');
-  const [generatedImage, setGeneratedImage] = useState(null);
+  // 메시지에서 키워드를 추출하는 함수
+  const extractKeywords = async (message) => {
+    try {
+      const prompt = `
+Please extract one single keyword in English from the following message that can be used for image generation.
 
-  // location.state가 변경될 때마다 상태 업데이트
-  useEffect(() => {
-    if (location.state?.message) {
-      setMessage(location.state.message);
+메시지: ${message}
+
+키워드:
+`;
+
+      const response = await axios.post(
+        "https://api.openai.com/v1/chat/completions",
+        {
+          model: "gpt-4",
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are an NLP expert. Extract exactly one relevant keyword in English from the provided message that can be used for image generation. The keyword must be concise and relevant.",
+            },
+            {
+              role: "user",
+              content: prompt,
+            },
+          ],
+          max_tokens: 100,
+          temperature: 0.5,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
+          },
+        }
+      );
+
+      const keywords = response.data.choices[0].message.content.trim();
+      return keywords.split(",").map((keyword) => keyword.trim());
+    } catch (err) {
+      console.error(err);
+      return [];
     }
-    if (location.state?.generatedImage) {
-      setGeneratedImage(location.state.generatedImage);
+  };
+
+  // 이미지 자동생성 버튼 클릭 시 처리 로직
+  const handleImageGeneration = async () => {
+    if (!message.trim()) {
+      alert("메시지를 입력하세요.");
+      return;
     }
-  }, [location.state]);
+
+    try {
+      // 키워드 추출
+      const extractedKeywords = await extractKeywords(message);
+
+      if (extractedKeywords.length === 0) {
+        alert("키워드를 추출하지 못했습니다. 메시지를 확인해주세요.");
+        return;
+      }
+
+      // 추출된 키워드를 첫 번째 값으로 사용
+      const keyword = extractedKeywords[0];
+      console.log("추출된 키워드:", keyword);
+
+      // /image-generation으로 이동하면서 상태 전달
+      navigate("/image-generation", { state: { message, keyword } });
+    } catch (error) {
+      console.error("키워드 추출 중 오류 발생:", error);
+      alert("키워드 추출에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
 
   return (
     <div style={styles.container}>
@@ -46,7 +109,7 @@ const MainPage = () => {
           ></textarea>
           <button
             style={styles.button}
-            onClick={() => navigate('/message-generation', { state: { message } })} // 상태 전달
+            onClick={() => navigate("/message-generation")}
           >
             문자 자동생성
           </button>
@@ -57,15 +120,16 @@ const MainPage = () => {
           <label style={styles.label}>이미지</label>
           <div style={styles.imageBox}>
             {generatedImage ? (
-              <img src={generatedImage} alt="Generated" style={styles.generatedImage} />
+              <img
+                src={generatedImage}
+                alt="Generated"
+                style={{ maxWidth: "100%", maxHeight: "100%" }}
+              />
             ) : (
-              '이미지가 여기에 표시됩니다.'
+              "이미지가 여기에 표시됩니다."
             )}
           </div>
-          <button
-            style={styles.button}
-            onClick={() => navigate('/image-generation', { state: { message } })} // 상태 전달
-          >
+          <button style={styles.button} onClick={handleImageGeneration}>
             이미지 자동생성
           </button>
         </div>
@@ -90,6 +154,7 @@ const MainPage = () => {
 };
 
 const styles = {
+  // 기존 스타일 정의
   container: {
     padding: "40px 20px",
     display: "flex",
@@ -164,11 +229,6 @@ const styles = {
     textAlign: "center",
     marginBottom: "10px",
     boxSizing: "border-box",
-  },
-  generatedImage: { // 추가된 스타일
-    maxWidth: '100%',
-    maxHeight: '100%',
-    objectFit: 'contain',
   },
   chatbotButton: {
     backgroundColor: "#76C7A3",
