@@ -72,16 +72,24 @@ const PersonalizationModal = ({
       return;
     }
 
-    const { instruction, example } = selectedToneData;
+    const { instruction, examples } = selectedToneData;
+
+    // 모든 예시를 프롬프트에 포함
+    const examplesText = examples
+      .map((example, index) => `Example ${index + 1}: "${example}"`)
+      .join("\n");
 
     const prompt = `
-    Please rewrite the following message in a tone that is ${instruction}.
-    The message should reflect the person's characteristics, notes, and the given example.
+    Please rewrite the following message in a tone that is described as follows:
+    "${instruction}"
+    The message should reflect the person's characteristics, notes, and the given examples.
+    The response must be written in Korean.
 
     Original message: "${textToConvert}"
     Tags: "${tag}"
     Memo: "${memo}"
-    Example for this tone: "${example}"
+    Examples for this tone:
+    ${examplesText}
   `;
     setLoading(true);
     try {
