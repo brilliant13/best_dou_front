@@ -83,9 +83,10 @@ const PersonalizationModal = ({
     Please rewrite the following message in a tone that is described as follows:
     "${instruction}"
     The message should reflect the person's characteristics, notes, and the given examples.
-    The response must be written in Korean.
+    The response must be written in Korean and should address the recipient by their name.
 
     Original message: "${textToConvert}"
+    Recipient's name: "${currentContact.name}"
     Tags: "${tag}"
     Memo: "${memo}"
     Examples for this tone:
