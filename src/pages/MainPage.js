@@ -7,6 +7,8 @@ import axios from "axios";
 const MainPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  
+  // 전달된 state에서 메시지와 이미지를 추출
   const messageFromState = location.state?.message || "";
   const [message, setMessage] = useState(messageFromState);
   const generatedImage = location.state?.generatedImage || null; // Retrieve the generated image URL
@@ -173,10 +175,10 @@ const MainPage = () => {
               <img
                 src={generatedImage}
                 alt="Generated"
-                style={{ maxWidth: "100%", maxHeight: "100%" }}
+                style={{ maxWidth: '100%', maxHeight: '100%' }}
               />
             ) : (
-              "이미지가 여기에 표시됩니다."
+              '이미지가 여기에 표시됩니다.'
             )}
           </div>
           <button style={styles.button} onClick={handleImageGeneration}>
@@ -294,7 +296,7 @@ const styles = {
   },
   textArea: {
     width: "100%",
-    height: "400px", // 이미지 박스 크기와 동일하게 조정
+    height: "400px",
     padding: "20px",
     fontSize: "16px",
     border: "1px solid #4A90E2",
