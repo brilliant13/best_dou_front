@@ -144,10 +144,10 @@ const ImageGeneration = () => {
               <p>이미지를 생성하세요</p>
             )}
             <button
-              onClick={() => {
+              onClick={() => {  
                 if (generatedImages.length > 0) {
                   const selectedImage = generatedImages[currentImageIndex]; // 현재 선택된 이미지 추출
-                  navigate('/', { state: { selectedImage, message: inputText } });
+                  navigate('/', { state: { message: inputText, generatedImage: selectedImage.original } });
                 } else {
                   alert('이미지를 먼저 생성해주세요.');
                 }

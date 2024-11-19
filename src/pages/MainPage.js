@@ -114,10 +114,10 @@ Please extract one single keyword in English from the following message that can
               <img
                 src={generatedImage}
                 alt="Generated"
-                style={{ maxWidth: "100%", maxHeight: "100%" }}
+                style={{ maxWidth: '100%', maxHeight: '100%' }}
               />
             ) : (
-              "이미지가 여기에 표시됩니다."
+              '이미지가 여기에 표시됩니다.'
             )}
           </div>
           <button style={styles.button} onClick={handleImageGeneration}>
