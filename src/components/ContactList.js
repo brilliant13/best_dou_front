@@ -1,6 +1,14 @@
 //주소록 및 카테고리 전환 컴포넌트
 import React, { useState } from "react";
-import { FaTrash, FaChevronUp, FaChevronDown } from "react-icons/fa"; // 화살표 아이콘 추가
+import {
+  FaTrash,
+  FaChevronUp,
+  FaChevronDown,
+  FaUser,
+  FaEnvelope,
+  FaPhone,
+  FaUserFriends,
+} from "react-icons/fa"; // 필요한 아이콘 추가
 import PersonalizationModal from "./PersonalizationModal"; // 모달 컴포넌트 임포트
 import { useNavigate } from "react-router-dom"; // 페이지 이동을 위한 useNavigate 사용
 import tonesobj from "../data/tones.json"; // JSON 파일 import
@@ -16,10 +24,8 @@ const ContactList = ({
   const tones = tonesobj;
   const navigate = useNavigate(); // navigate 훅 선언
   const [isModalOpen, setIsModalOpen] = useState(false); // 모달 열림/닫힘 상태
-  // const [convertedTexts, setConvertedTexts] = useState({}); // 수신자별 메시지 상태
   const [activeTab, setActiveTab] = useState("찐친");
   const [expandedContactId, setExpandedContactId] = useState(null); // 세부사항이 확장된 연락처 ID
-  // const [selectedContacts, setSelectedContacts] = useState([]); // 선택된 연락처 목록
   const [isAllChecked, setIsAllChecked] = useState(false); // 전체 선택 상태를 저장하는 변수
   const [isEditing, setIsEditing] = useState(null); // 수정 모드 상태 저장
   const [editData, setEditData] = useState({ tag: "", memo: "", tone: "" });
@@ -196,20 +202,18 @@ const ContactList = ({
     setIsAllChecked(!isAllChecked); // 상태 반전
   };
 
-  // 선택된 연락처 삭제 함수
-  const handleDelete = () => {
-    const remainingContacts = contacts.filter(
-      (contact) => !selectedContacts.includes(contact.id)
-    );
-    setContacts(remainingContacts); // 삭제된 연락처 목록으로 상태 업데이트
-    setSelectedContacts([]); // 선택된 연락처 목록 초기화
+  const handleDelete = (id) => {
+    const remainingContacts = contacts.filter((contact) => contact.id !== id);
+    setContacts(remainingContacts); // 삭제된 연락처 목록 업데이트
+    setSelectedContacts((prevSelected) =>
+      prevSelected.filter((selected) => selected.id !== id)
+    ); // 선택된 목록에서 삭제
   };
 
   // 세부사항 토글 함수
   const toggleDetails = (id) => {
     setExpandedContactId(expandedContactId === id ? null : id);
   };
-
   // 수정 모드로 전환
   const handleEdit = (contact) => {
     setIsEditing(contact.id);
@@ -264,11 +268,13 @@ const ContactList = ({
             type="checkbox"
             checked={isAllChecked}
             onChange={handleAllCheckboxChange} // 전체 선택 함수 호출
+            style={{
+              ...styles.checkbox,
+              transform: "scale(1.8)",
+              marginLeft: "-35px",
+            }} // 크기 확대
           />
-          {/* <input type="checkbox" /> */}
-          <button onClick={handleDelete} style={styles.deleteButton}>
-            <FaTrash style={styles.icon} /> {/* 휴지통 아이콘 추가 */}
-          </button>
+          <span style={styles.selectAllText}>전체 선택</span>
         </div>
         <div style={styles.buttonsContainer}>
           {/* 텍스트 개인 맞춤화 버튼에 onClick 이벤트 추가 */}
@@ -282,9 +288,6 @@ const ContactList = ({
           >
             <span style={styles.plusIcon}>+</span> &nbsp;연락처 추가
           </button>
-          {/* <button style={styles.personalizeButton}>
-                        <span style={styles.plusIcon}>+</span> &nbsp;연락처 추가
-                    </button> */}
         </div>
       </div>
       {/* 모달 컴포넌트 호출 */}
@@ -298,135 +301,168 @@ const ContactList = ({
         />
       )}
 
-      <div style={styles.contactListContainer}>
-        {filteredContacts.length > 0 ? (
-          filteredContacts.map((contact) => (
-            <div key={contact.id} style={styles.contactItem}>
-              <div style={styles.contactInfo}>
-                {/* <input type="checkbox" style={styles.checkbox} /> */}
-                <input
-                  type="checkbox"
-                  checked={selectedContacts.some(
-                    (selected) => selected.id === contact.id
-                  )}
-                  onChange={() => handleCheckboxChange(contact.id)}
-                  style={styles.checkbox}
-                />
-                <img
-                  src={contact.profile}
-                  alt="Profile"
-                  style={styles.profileImage}
-                />
-                <span style={styles.name}>{contact.name}</span>
-                <span style={styles.nickname}>{contact.nickname}</span>
-                <span style={styles.email}>{contact.email}</span>
-                <span style={styles.phone}>{contact.phone}</span>
-                <span style={styles.group}>{contact.group}</span>
-
-                <button
-                  onClick={() => toggleDetails(contact.id)}
-                  style={styles.detailsButton}
-                >
-                  {expandedContactId === contact.id ? (
-                    <FaChevronUp />
-                  ) : (
-                    <FaChevronDown />
-                  )}
-                </button>
-              </div>
-
-              {/* 세부사항 펼쳐지는 부분 */}
-              {expandedContactId === contact.id && (
-                <div style={styles.detailsContainer}>
-                  <div style={styles.detailsHeader}>
-                    {isEditing === contact.id ? (
-                      <button
-                        style={styles.saveButton}
-                        onClick={() => handleSave(contact.id)}
-                      >
-                        저장
-                      </button>
-                    ) : (
-                      <button
-                        style={styles.saveButton}
-                        onClick={() => handleEdit(contact)}
-                      >
-                        수정
-                      </button>
+      <div style={styles.contactContainer}>
+        <div style={styles.contactListContainer}>
+          <div style={styles.contactHeaderRow}>
+            <span style={styles.headerItem}>
+              <FaUser /> 이름
+            </span>
+            <span style={styles.headerItem}>
+              <FaUserFriends /> 관계
+            </span>
+            <span style={{ ...styles.headerItem, marginLeft: "70px" }}>
+              <FaEnvelope /> 이메일
+            </span>
+            <span style={{ ...styles.headerItem, marginLeft: "113px" }}>
+              <FaPhone /> 전화번호
+            </span>
+          </div>
+          {filteredContacts.length > 0 ? (
+            filteredContacts.map((contact, index) => (
+              <div
+                key={contact.id}
+                style={{
+                  ...styles.contactItem, // 행 색상 교차
+                }}
+              >
+                <div style={styles.contactInfo}>
+                  {/* <input type="checkbox" style={styles.checkbox} /> */}
+                  <input
+                    type="checkbox"
+                    checked={selectedContacts.some(
+                      (selected) => selected.id === contact.id
                     )}
-                    <button style={styles.sendRecordButton}>발송 기록</button>
-                  </div>
-                  {isEditing === contact.id ? (
-                    <>
-                      <p>
-                        <strong>특징:</strong>{" "}
-                        <input
-                          name="tag"
-                          value={editData.tag}
-                          onChange={handleInputChange}
-                          style={{ width: "500px", height: "30px" }}
-                        />
-                      </p>
-                      <p>
-                        <strong>메모:</strong>{" "}
-                        <input
-                          name="memo"
-                          value={editData.memo}
-                          onChange={handleInputChange}
-                          style={{ width: "500px", height: "30px" }}
-                        />
-                      </p>
-                      <p>
-                        <strong>어조 선택:</strong>
-                      </p>
-                      <div style={styles.toneButtons}>
-                        {tones.map((tone) => (
-                          <button
-                            key={tone.label}
-                            onClick={() => handleToneSelection(tone.label)}
-                            style={{
-                              ...styles.toneButton,
-                              backgroundColor:
-                                editData.tone === tone.label
-                                  ? "#007bff"
-                                  : "#ccc",
-                              color:
-                                editData.tone === tone.label
-                                  ? "white"
-                                  : "black",
-                            }}
-                          >
-                            {tone.label}
-                          </button>
-                        ))}
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <p>
-                        <strong>특징:</strong> {contact.tag}
-                      </p>
-                      <p>
-                        <strong>메모:</strong> {contact.memo}
-                      </p>
-                      <p>
-                        <strong>어조:</strong> {contact.tone}
-                      </p>
-                    </>
-                  )}
+                    onChange={() => handleCheckboxChange(contact.id)}
+                    style={styles.checkbox}
+                  />
+                  <span style={styles.name}>{contact.name}</span>
+                  <span style={styles.nickname}>{contact.nickname}</span>
+                  <span style={styles.email}>{contact.email}</span>
+                  <span style={styles.phone}>{contact.phone}</span>
+
+                  <button
+                    onClick={() => toggleDetails(contact.id)}
+                    style={
+                      expandedContactId === contact.id
+                        ? styles.detailsButtonActive
+                        : styles.detailsButton
+                    }
+                  >
+                    {expandedContactId === contact.id ? (
+                      <FaChevronUp />
+                    ) : (
+                      <FaChevronDown />
+                    )}
+                  </button>
+                  <br></br>
+                  {/* 휴지통 버튼 */}
+                  <button
+                    onClick={() => handleDelete(contact.id)}
+                    style={styles.deleteButton}
+                  >
+                    <FaTrash style={{ ...styles.icon }} />
+                  </button>
                 </div>
-              )}
-            </div>
-          ))
-        ) : (
-          <div style={styles.noData}>데이터가 없습니다.</div>
-        )}
+
+                {/* 세부사항 펼쳐지는 부분 */}
+                {expandedContactId === contact.id && (
+                  <div style={styles.detailsContainer}>
+                    <div style={styles.detailsHeader}>
+                      {isEditing === contact.id ? (
+                        <button
+                          style={styles.saveButton}
+                          onClick={() => handleSave(contact.id)}
+                        >
+                          저장
+                        </button>
+                      ) : (
+                        <button
+                          style={styles.saveButton}
+                          onClick={() => handleEdit(contact)}
+                        >
+                          수정
+                        </button>
+                      )}
+                      <button style={styles.sendRecordButton}>발송 기록</button>
+                    </div>
+                    {isEditing === contact.id ? (
+                      <>
+                        <p>
+                          <strong>특징:</strong>{" "}
+                          <input
+                            name="tag"
+                            value={editData.tag}
+                            onChange={handleInputChange}
+                            style={{ width: "500px", height: "30px" }}
+                          />
+                        </p>
+                        <p>
+                          <strong>메모:</strong>{" "}
+                          <input
+                            name="memo"
+                            value={editData.memo}
+                            onChange={handleInputChange}
+                            style={{ width: "500px", height: "30px" }}
+                          />
+                        </p>
+                        <p>
+                          <strong>어조 선택:</strong>
+                        </p>
+                        <div style={styles.toneButtons}>
+                          {tones.map((tone) => (
+                            <button
+                              key={tone.label}
+                              onClick={() => handleToneSelection(tone.label)}
+                              style={{
+                                ...styles.toneButton,
+                                backgroundColor:
+                                  editData.tone === tone.label
+                                    ? "#007bff"
+                                    : "#ccc",
+                                color:
+                                  editData.tone === tone.label
+                                    ? "white"
+                                    : "black",
+                              }}
+                            >
+                              {tone.label}
+                            </button>
+                          ))}
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <p>
+                          <strong>특징:</strong> {contact.tag}
+                        </p>
+                        <p>
+                          <strong>메모:</strong> {contact.memo}
+                        </p>
+                        <p>
+                          <strong>어조:</strong> {contact.tone}
+                        </p>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+            ))
+          ) : (
+            <div style={styles.noData}>데이터가 없습니다.</div>
+          )}
+        </div>
       </div>
     </div>
   );
 };
 
 const styles = {
+  contactContainer: {
+    display: "flex",
+    justifyContent: "center", // 가로 가운데 정렬
+    backgroundColor: "white", // 배경색 추가 (선택)
+  },
+
   container: {
     padding: "20px",
     width: "100%",
@@ -438,22 +474,28 @@ const styles = {
   },
   tabs: {
     display: "flex",
-    borderBottom: "1px solid #ccc",
+    padding: "10px",
+    borderBottom: "1px solid #4A90E2",
     marginBottom: "10px",
     justifyContent: "center",
   },
   tab: {
     padding: "10px 20px",
-    border: "none",
+    border: "1px solid #4A90E2", // 테두리 추가
     background: "none",
     cursor: "pointer",
     color: "#333",
+    borderRadius: "5px", // 둥근 테두리
+    margin: "0 5px", // 버튼 간격 추가
   },
   activeTab: {
     padding: "10px 20px",
-    borderBottom: "2px solid #007bff",
+    border: "1px solid #4A90E2", // 테두리 유지
+    background: "#E6F4FF", // 활성화된 배경색 추가
     fontWeight: "bold",
     color: "#007bff",
+    borderRadius: "5px",
+    margin: "0 5px",
   },
   actions: {
     display: "flex",
@@ -462,6 +504,7 @@ const styles = {
     marginBottom: "10px",
   },
   icons: {
+    marginLeft: "160px",
     display: "flex",
     alignItems: "center",
   },
@@ -478,6 +521,7 @@ const styles = {
     padding: "0",
   },
   buttonsContainer: {
+    marginRight: "80px",
     display: "flex",
     gap: "10px",
   },
@@ -498,51 +542,70 @@ const styles = {
     marginRight: "5px",
   },
   contactListContainer: {
-    border: "1px solid #ccc",
+    border: "1px solid #4A90E2",
     borderRadius: "8px",
     padding: "10px",
-    backgroundColor: "#f9f9f9",
+    width: "80%",
+    backgroundColor: "#ffffff",
+  },
+  contactHeaderRow: {
+    display: "flex",
+    alignItems: "center",
+    padding: "5px 0",
+    marginLeft: "25px",
+    borderBottom: "1px solid #4A90E2",
+    marginBottom: "10px",
+    fontWeight: "bold",
+    color: "#4A90E2",
+  },
+  headerItem: {
+    marginLeft: "53px",
+    display: "flex",
+    alignItems: "center",
+    gap: "5px",
+    width: "100px",
   },
   contactItem: {
+    padding: "15px",
     borderBottom: "1px solid #ccc",
-    padding: "10px",
   },
   contactInfo: {
     display: "flex",
     alignItems: "center",
+    gap: "50px",
+    justifyContent: "space-between", // 각 열 사이를 일정 간격 유지
   },
   profileImage: {
     width: "40px",
     height: "40px",
     borderRadius: "50%",
-    marginRight: "10px",
   },
   name: {
     width: "100px",
-    marginRight: "10px",
   },
   nickname: {
     width: "100px",
-    marginRight: "10px",
   },
   email: {
     width: "200px",
-    marginRight: "10px",
   },
   phone: {
     width: "150px",
-    marginRight: "10px",
-  },
-  group: {
-    width: "100px",
-    marginRight: "10px",
   },
   detailsButton: {
+    backgroundColor: "#ffffff",
+    color: "#007bff",
+    border: "1px solid #007bff",
+    borderRadius: "5px",
+    padding: "5px 10px",
+    cursor: "pointer",
+  },
+  detailsButtonActive: {
     backgroundColor: "#007bff",
     color: "white",
-    border: "none",
-    padding: "5px 10px",
+    border: "1px solid #007bff",
     borderRadius: "5px",
+    padding: "5px 10px",
     cursor: "pointer",
   },
   detailsContainer: {
@@ -554,9 +617,6 @@ const styles = {
   },
   detailsHeader: {
     display: "flex",
-    //justifyContent: 'space-between',
-    // justifyContent: 'flet-start',
-
     marginBottom: "10px",
   },
   saveButton: {
@@ -581,9 +641,9 @@ const styles = {
     padding: "20px",
     color: "#888",
   },
-
   checkbox: {
     marginRight: "10px",
+    transform: "scale(1.5)",
   },
   toneButton: {
     padding: "8px 10px",
@@ -596,6 +656,9 @@ const styles = {
     display: "flex",
     flexWrap: "wrap",
     gap: "5px",
+  },
+  selectAllText: {
+    color: "#4A90E2",
   },
 };
 
