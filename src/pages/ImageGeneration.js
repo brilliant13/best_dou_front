@@ -9,7 +9,7 @@ const ImageGeneration = () => {
   const navigate = useNavigate();
 
   const [inputText, setInputText] = useState(location.state?.message || '');
-  const [keyword] = useState(location.state?.keyword || '');
+  const [keyword, setKeyword] = useState(location.state?.keyword || '');
   const [style, setStyle] = useState(null);
   const [subject, setSubject] = useState(null);
   const [emotion, setEmotion] = useState(null);
@@ -45,7 +45,7 @@ const ImageGeneration = () => {
   };
 
   const handleInputChange = (e) => {
-    setInputText(e.target.value);
+    setKeyword(e.target.value);
   };
 
   const handleSubmit = () => {
