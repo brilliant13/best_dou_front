@@ -134,7 +134,9 @@ const MainPage = () => {
       return {
         recipientPhoneNumber: contact.phone, // 전화번호
         messageContent: message, // 메시지 내용
-        image: generatedImage || null, // 생성된 이미지 추가
+        // image: generatedImage || null, // 생성된 이미지 추가
+        image: generatedImage?.split(",")[1] || null, // Base64 데이터만 추출
+        
       };
     });
 
