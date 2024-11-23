@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import tonesobj from "../data/tones.json";
 import LoadingAnimation from "../components/LoadingAnimation";
+import MessageAnimation from "../components/MessageAnimation";
+
 
 const PersonalizationModal = ({
   selectedContacts,
@@ -145,7 +147,7 @@ const PersonalizationModal = ({
   return (
     <div style={styles.modalOverlay}>
       <div style={styles.modalContent}>
-        {loading && <LoadingAnimation />}
+        {loading && <MessageAnimation />}
         <h2 style={styles.title}>텍스트 개인 맞춤화</h2>
 
         {currentContact && (
