@@ -3,11 +3,13 @@ import ContactList from "../components/ContactList";
 import { useNavigate, useLocation } from "react-router-dom";
 import logo from "../assets/images/logo.png";
 import axios from "axios";
+import { DiFirebase } from "react-icons/di";
+import { sendMessages } from "../services/PpurioApiService";
 
 const MainPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   // 전달된 state에서 메시지와 이미지를 추출
   const messageFromState = location.state?.message || "";
   const [message, setMessage] = useState(messageFromState);
@@ -15,7 +17,8 @@ const MainPage = () => {
   const [convertedTexts, setConvertedTexts] = useState({}); // 수신자별 메시지 상태
   const [selectedContacts, setSelectedContacts] = useState([]); // 선택된 연락처 목록
   const [currentContactIndex, setCurrentContactIndex] = useState(0); //현재 어떤 수신자인지 인덱스 표시
-
+  console.log(convertedTexts);
+  console.log(selectedContacts);
   // 메시지에서 키워드를 추출하는 함수
   const extractKeywords = async (message) => {
     try {
@@ -83,6 +86,33 @@ const MainPage = () => {
       console.error("키워드 추출 중 오류 발생:", error);
       alert("키워드 추출에 실패했습니다. 다시 시도해주세요.");
     }
+  };
+
+  const handleSendButtonClick = async () => {
+    const mergedData = mergePhoneAndMessages(); // 데이터 생성
+
+    try {
+      const response = await sendMessages(mergedData); // API 호출
+      console.log("서버 응답:", response.data);
+      alert("메시지가 성공적으로 전송되었습니다!");
+    } catch (error) {
+      console.error("메시지 전송 실패:", error);
+      alert("메시지 전송 중 오류가 발생했습니다. 다시 시도해주세요.");
+    }
+  };
+
+  // phone과 convertedTexts를 합쳐 새로운 객체 생성
+  const mergePhoneAndMessages = () => {
+    const mergedData = selectedContacts.map((contact) => {
+      const message = convertedTexts[contact.id] || ""; // 해당 ID의 문자 내용을 가져옴
+      return {
+        recipientPhoneNumber: contact.phone, // phone을 recipientPhoneNumber로 저장
+        messageContent: message, // message를 messageContent로 저장
+      };
+    });
+
+    console.log("Merged Data:", mergedData); // 결과 확인용
+    return mergedData;
   };
 
   return (
@@ -175,10 +205,10 @@ const MainPage = () => {
               <img
                 src={generatedImage}
                 alt="Generated"
-                style={{ maxWidth: '100%', maxHeight: '100%' }}
+                style={{ maxWidth: "100%", maxHeight: "100%" }}
               />
             ) : (
-              '이미지가 여기에 표시됩니다.'
+              "이미지가 여기에 표시됩니다."
             )}
           </div>
           <button style={styles.button} onClick={handleImageGeneration}>
@@ -205,7 +235,9 @@ const MainPage = () => {
           챗봇 사용하기
         </button>
 
-        <button style={styles.sendButton}>전송하기</button>
+        <button style={styles.sendButton} onClick={handleSendButtonClick}>
+          전송하기
+        </button>
       </div>
     </div>
   );
