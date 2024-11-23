@@ -476,7 +476,7 @@ const styles = {
 
   container: {
     padding: "20px",
-    width: "100%",
+    width: "1200px",
     maxWidth: "1200px",
     margin: "0 auto",
   },
@@ -556,7 +556,7 @@ const styles = {
     border: "1px solid #4A90E2",
     borderRadius: "8px",
     padding: "10px",
-    width: "80%",
+    width: "950px",
     backgroundColor: "#ffffff",
   },
   contactHeaderRow: {
