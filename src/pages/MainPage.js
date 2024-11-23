@@ -1,3 +1,4 @@
+//src/pages/MainPage.js
 import React, { useState } from "react";
 import ContactList from "../components/ContactList";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -88,9 +89,22 @@ const MainPage = () => {
     }
   };
 
-  const handleSendButtonClick = async () => {
-    const mergedData = mergePhoneAndMessages(); // 데이터 생성
+  // const handleSendButtonClick = async () => {
+  //   const mergedData = mergePhoneAndMessages(); // 데이터 생성
 
+  //   try {
+  //     const response = await sendMessages(mergedData); // API 호출
+  //     console.log("서버 응답:", response.data);
+  //     alert("메시지가 성공적으로 전송되었습니다!");
+  //   } catch (error) {
+  //     console.error("메시지 전송 실패:", error);
+  //     alert("메시지 전송 중 오류가 발생했습니다. 다시 시도해주세요.");
+  //   }
+  // };
+
+  const handleSendButtonClick = async () => {
+    const mergedData = mergePhoneAndMessages(); // 데이터 병합 (전화번호, 메시지, 이미지)
+  
     try {
       const response = await sendMessages(mergedData); // API 호출
       console.log("서버 응답:", response.data);
@@ -100,20 +114,39 @@ const MainPage = () => {
       alert("메시지 전송 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
+  
+
 
   // phone과 convertedTexts를 합쳐 새로운 객체 생성
+  // const mergePhoneAndMessages = () => {
+  //   const mergedData = selectedContacts.map((contact) => {
+  //     const message = convertedTexts[contact.id] || ""; // 해당 ID의 문자 내용을 가져옴
+  //     return {
+  //       recipientPhoneNumber: contact.phone, // phone을 recipientPhoneNumber로 저장
+  //       messageContent: message, // message를 messageContent로 저장
+  //     };
+  //   });
+
+  //   console.log("Merged Data:", mergedData); // 결과 확인용
+  //   return mergedData;
+  // };
   const mergePhoneAndMessages = () => {
     const mergedData = selectedContacts.map((contact) => {
-      const message = convertedTexts[contact.id] || ""; // 해당 ID의 문자 내용을 가져옴
+      const message = convertedTexts[contact.id] || ""; // 선택된 연락처에 해당하는 메시지 내용 가져오기
       return {
-        recipientPhoneNumber: contact.phone, // phone을 recipientPhoneNumber로 저장
-        messageContent: message, // message를 messageContent로 저장
+        recipientPhoneNumber: contact.phone, // 전화번호
+        messageContent: message, // 메시지 내용
+        image: generatedImage || null, // 생성된 이미지 추가
       };
     });
-
-    console.log("Merged Data:", mergedData); // 결과 확인용
+  
+    console.log("Merged Data:", mergedData); // 데이터 확인용 로그
     return mergedData;
   };
+
+
+
+
 
   return (
     <div style={styles.container}>
