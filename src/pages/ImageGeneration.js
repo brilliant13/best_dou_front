@@ -9,7 +9,7 @@ const ImageGeneration = () => {
   const navigate = useNavigate();
 
   const [inputText, setInputText] = useState(location.state?.message || '');
-  const [keyword] = useState(location.state?.keyword || '');
+  const [keyword, setKeyword] = useState(location.state?.keyword || '');
   const [style, setStyle] = useState(null);
   const [subject, setSubject] = useState(null);
   const [emotion, setEmotion] = useState(null);
@@ -28,12 +28,6 @@ const ImageGeneration = () => {
         일러스트: 'illustration',
         '픽셀 아트': 'pixel art',
       },
-      subject: {
-        청첩장: 'invitation',
-        '축하 문자': 'congratulation message',
-        '안부 문자': 'greeting message',
-        '소식 전달': 'announcement',
-      },
       emotion: {
         행복한: 'happy',
         슬픈: 'sad',
@@ -51,7 +45,7 @@ const ImageGeneration = () => {
   };
 
   const handleInputChange = (e) => {
-    setInputText(e.target.value);
+    setKeyword(e.target.value);
   };
 
   const handleSubmit = () => {
@@ -66,7 +60,6 @@ const ImageGeneration = () => {
     const requestData = {
       style: translateCategory('style', style),
       keyword,
-      subject: translateCategory('subject', subject),
       emotion: translateCategory('emotion', emotion),
       background: translateCategory('background', background),
       message: inputText,
@@ -111,19 +104,24 @@ const ImageGeneration = () => {
       {isLoading && <LoadingAnimation />}
       <div style={styles.row}>
         <div style={styles.column}>
-          <h2>발송 목적 및 내용</h2>
-          {inputText && (
-            <div style={styles.selectedKeyword}>
-              <h3>추출된 키워드:</h3>
-              <p>{keyword}</p>
-            </div>
-          )}
-          <textarea
-            placeholder="text 입력"
-            value={inputText}
-            onChange={handleInputChange}
-            style={styles.textArea}
-          />
+        <h2>발송 목적 및 내용</h2>
+          <div style={styles.selectedKeyword}>
+            <h3>추출된 키워드:</h3>
+            <input
+              type="text"
+              value={keyword}
+              onChange={handleInputChange} // 키워드 수정 가능
+              style={styles.keywordInput}
+            />
+          </div>
+          <div style={styles.textAreaContainer}>
+            <textarea 
+              placeholder="text 입력"
+              value={inputText}
+              readOnly // 텍스트 수정 불가능
+              style={styles.textArea}
+            />
+          </div>
           <div style={styles.keywordContainer}>
             <h3>주요 키워드 제시</h3>
             <div style={styles.keywordButtons}>
@@ -264,6 +262,18 @@ const styles = {
     borderRadius: '8px',
     alignSelf: 'center',
     marginTop: '20px',
+  },
+  keywordInput: {
+    width: '50%',
+    padding: '8px',
+    fontSize: '16px',
+    border: '1px solid #ccc',
+    borderRadius: '8px',
+    marginTop: '10px',
+    textAlign: 'center',
+  },
+  textAreaContainer: {
+    marginBottom: '20px',
   },
 };
 
