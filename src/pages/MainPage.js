@@ -268,12 +268,12 @@ const MainPage = () => {
       />
 
       <div style={styles.container}>
-        <button
+        {/* <button
           style={styles.chatbotButton}
           onClick={() => navigate("/chatbot")}
         >
           챗봇 사용하기
-        </button>
+        </button> */}
 
         <button style={styles.sendButton} onClick={handleSendButtonClick}>
           전송하기

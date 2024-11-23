@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import tonesobj from "../data/tones.json";
+import LoadingAnimation from "../components/LoadingAnimation";
+import MessageAnimation from "../components/MessageAnimation";
+
 
 const PersonalizationModal = ({
   selectedContacts,
@@ -16,8 +19,8 @@ const PersonalizationModal = ({
   const [selectedTones, setSelectedTones] = useState({}); // 선택된 톤 상태
 
   const currentContact = selectedContacts[currentIndex];
-
   const { tag, memo } = currentContact; // 현재 선택된 연락처의 tag와 memo 가져오기
+  const [isLoading, setIsLoading] = useState(false); // 로딩 상태
 
   // handleToneSelection 함수 추가
   const handleToneSelection = (toneInstruction) => {
@@ -144,6 +147,7 @@ const PersonalizationModal = ({
   return (
     <div style={styles.modalOverlay}>
       <div style={styles.modalContent}>
+        {loading && <MessageAnimation />}
         <h2 style={styles.title}>텍스트 개인 맞춤화</h2>
 
         {currentContact && (
