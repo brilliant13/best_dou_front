@@ -167,7 +167,15 @@ const MainPage = () => {
 
       <div style={styles.row}>
         <div style={styles.section}>
-          <label style={styles.label}>메시지</label>
+          <div style={styles.labelWithButton}>
+            <label style={styles.label}>메시지</label>
+            <button
+              style={styles.button}
+              onClick={() => navigate("/message-generation")}
+            >
+              문자 자동생성
+            </button>
+          </div>
           {selectedContacts.length > 0 ? (
             <>
               {/* 현재 선택된 연락처의 변환된 메시지 표시 */}
@@ -230,16 +238,15 @@ const MainPage = () => {
               ></textarea>
             </>
           )}
-          <button
-            style={styles.button}
-            onClick={() => navigate("/message-generation")}
-          >
-            문자 자동생성
-          </button>
         </div>
 
         <div style={styles.section}>
-          <label style={styles.label}>이미지</label>
+          <div style={styles.labelWithButton}>
+            <label style={styles.label}>이미지</label>
+            <button style={styles.button} onClick={handleImageGeneration}>
+              이미지 자동생성
+            </button>
+          </div>
           <div style={styles.imageBox}>
             {generatedImage ? (
               <img
@@ -251,21 +258,26 @@ const MainPage = () => {
               "이미지가 여기에 표시됩니다."
             )}
           </div>
-          <button style={styles.button} onClick={handleImageGeneration}>
-            이미지 자동생성
-          </button>
         </div>
       </div>
 
-      {/* 주소록 */}
-      <ContactList
-        message={message}
-        setMessage={setMessage}
-        convertedTexts={convertedTexts}
-        setConvertedTexts={setConvertedTexts}
-        selectedContacts={selectedContacts}
-        setSelectedContacts={setSelectedContacts}
-      />
+      {/* 주소록을 메시지와 이미지 자동생성 바로 아래에 배치 */}
+      <div style={styles.contactListSection}>
+        <ContactList
+          message={message}
+          setMessage={setMessage}
+          convertedTexts={convertedTexts}
+          setConvertedTexts={setConvertedTexts}
+          selectedContacts={selectedContacts}
+          setSelectedContacts={setSelectedContacts}
+        />
+        {/* 전송하기 버튼을 주소록 바로 아래에 배치 */}
+        <div style={styles.sendButtonContainer}>
+          <button style={styles.sendButton} onClick={handleSendButtonClick}>
+            전송하기
+          </button>
+        </div>
+      </div>
 
       <div style={styles.container}>
         {/* <button
@@ -274,31 +286,12 @@ const MainPage = () => {
         >
           챗봇 사용하기
         </button> */}
-
-        <button style={styles.sendButton} onClick={handleSendButtonClick}>
-          전송하기
-        </button>
       </div>
     </div>
   );
 };
 
 const styles = {
-  navigationButtons: {
-    display: "flex",
-    justifyContent: "space-between",
-    marginTop: "10px",
-    gap: "20px", // 버튼 간격 추가
-  },
-  navButton: {
-    backgroundColor: "#007BFF",
-    color: "white",
-    border: "none",
-    padding: "10px 20px",
-    borderRadius: "5px",
-    cursor: "pointer",
-    fontSize: "14px",
-  },
   contactName: {
     marginTop: "10px",
     fontSize: "18px",
@@ -349,22 +342,28 @@ const styles = {
     boxShadow: "0 1px 5px rgba(0, 0, 0, 0.1)",
     textAlign: "center",
   },
-  button: {
-    backgroundColor: "#4A90E2",
-    color: "white",
-    border: "none",
-    padding: "15px 30px",
-    fontSize: "18px",
-    borderRadius: "8px",
-    cursor: "pointer",
-    marginTop: "20px",
-    width: "100%",
+  labelWithButton: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%", // 라벨과 버튼이 같은 섹션에서 정렬되도록
+    marginBottom: "10px",
   },
   label: {
     fontSize: "18px",
     fontWeight: "bold",
-    marginBottom: "10px",
-    color: "#4A90E2",
+    color: "black",
+    marginRight: "10px", // 버튼과 약간의 간격 추가
+  },
+  button: {
+    backgroundColor: "#4A90E2",
+    color: "white",
+    border: "none",
+    padding: "10px 20px",
+    fontSize: "14px",
+    borderRadius: "5px",
+    cursor: "pointer",
+    transition: "0.3s",
   },
   textArea: {
     width: "100%",
@@ -406,15 +405,41 @@ const styles = {
     cursor: "pointer",
     marginTop: "20px",
   },
+  contactListSection: {
+    width: "1200px",
+    maxWidth: "1200px",
+  },
+  sendButtonContainer: {
+    display: "flex",
+    justifyContent: "center",
+    marginTop: "20px", // 전송하기 버튼과 주소록 사이의 간격
+  },
   sendButton: {
     backgroundColor: "#4A90E2",
     color: "white",
     border: "none",
     padding: "15px 30px",
     fontSize: "16px",
+    fontWeight: "bold",
     borderRadius: "8px",
     cursor: "pointer",
-    marginTop: "20px",
+    width: "200px", // 버튼 크기 지정
+    textAlign: "center",
+  },
+  navigationButtons: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginTop: "10px",
+    gap: "20px", // 버튼 간격 추가
+  },
+  navButton: {
+    backgroundColor: "#007BFF",
+    color: "white",
+    border: "none",
+    padding: "10px 20px",
+    borderRadius: "5px",
+    cursor: "pointer",
+    fontSize: "14px",
   },
 };
 
