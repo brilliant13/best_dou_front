@@ -17,7 +17,7 @@ const Header = () => {
 
       {/* 오른쪽: 사용자 이름 */}
       <div style={styles.rightSection}>
-        <span style={styles.userName}>안예찬님</span>
+        <span style={styles.userName}>최고다우님</span>
       </div>
     </header>
   );
@@ -59,11 +59,13 @@ const styles = {
     alignItems: "center",
   },
   userName: {
-    fontSize: "25px",
-    fontWeight: "bold",
-    color: "#4A90E2", // 부드러운 파란색으로 사용자 이름 설정
+    fontSize: "24px",
+    fontWeight: "500", // 더 부드러운 굵기
+    color: "black",
     whiteSpace: "nowrap",
     marginRight: "70px",
+    fontFamily: "'Noto Sans KR', sans-serif", // Google Fonts 적용
+    letterSpacing: "0.5px", // 자간 조정으로 읽기 편하게
   },
 };
 

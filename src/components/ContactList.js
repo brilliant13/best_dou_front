@@ -669,7 +669,7 @@ const styles = {
     gap: "5px",
   },
   selectAllText: {
-    color: "#4A90E2",
+    color: "black",
   },
 };
 
