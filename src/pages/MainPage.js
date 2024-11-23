@@ -104,8 +104,12 @@ const MainPage = () => {
 
   const handleSendButtonClick = async () => {
     const mergedData = mergePhoneAndMessages(); // 데이터 병합 (전화번호, 메시지, 이미지)
-  
+
     try {
+      console.log(
+        "Sending data to backend:",
+        JSON.stringify(mergedData, null, 2)
+      );
       const response = await sendMessages(mergedData); // API 호출
       console.log("서버 응답:", response.data);
       alert("메시지가 성공적으로 전송되었습니다!");
@@ -114,8 +118,6 @@ const MainPage = () => {
       alert("메시지 전송 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
-  
-
 
   // phone과 convertedTexts를 합쳐 새로운 객체 생성
   // const mergePhoneAndMessages = () => {
@@ -133,20 +135,25 @@ const MainPage = () => {
   const mergePhoneAndMessages = () => {
     const mergedData = selectedContacts.map((contact) => {
       const message = convertedTexts[contact.id] || ""; // 선택된 연락처에 해당하는 메시지 내용 가져오기
+      const imageBase64 = generatedImage?.split(",")[1] || null; // Base64 데이터만 추출
+
+      // 디버깅: 이미지 데이터 크기 확인
+      if (imageBase64) {
+        console.log(`Image Base64 Size (before): ${imageBase64.length}`);
+        const calculatedSize = Math.floor((imageBase64.length * 3) / 4); // Base64 원본 크기 계산
+        console.log(`Calculated Original Size: ${calculatedSize}`);
+      }
+
       return {
         recipientPhoneNumber: contact.phone, // 전화번호
         messageContent: message, // 메시지 내용
-        image: generatedImage || null, // 생성된 이미지 추가
+        imageBase64: imageBase64, // Base64 데이터 전달
       };
     });
-  
-    console.log("Merged Data:", mergedData); // 데이터 확인용 로그
+
+    console.log("Merged Data:", JSON.stringify(mergedData, null, 2)); // 병합된 데이터 확인
     return mergedData;
   };
-
-
-
-
 
   return (
     <div style={styles.container}>
