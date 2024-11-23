@@ -282,7 +282,7 @@ const styles = {
     padding: "30px",
     borderRadius: "12px",
     width: "600px", // 모달창 너비
-    height: "600px", // 모달창 높이
+    height: "850px", // 모달창 높이
     boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
     zIndex: 1001,
     overflowY: "auto",
