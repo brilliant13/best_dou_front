@@ -104,7 +104,7 @@ const MainPage = () => {
 
   const handleSendButtonClick = async () => {
     const mergedData = mergePhoneAndMessages(); // 데이터 병합 (전화번호, 메시지, 이미지)
-  
+
     try {
       const response = await sendMessages(mergedData); // API 호출
       console.log("서버 응답:", response.data);
@@ -114,8 +114,6 @@ const MainPage = () => {
       alert("메시지 전송 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
-  
-
 
   // phone과 convertedTexts를 합쳐 새로운 객체 생성
   // const mergePhoneAndMessages = () => {
@@ -139,123 +137,124 @@ const MainPage = () => {
         image: generatedImage || null, // 생성된 이미지 추가
       };
     });
-  
+
     console.log("Merged Data:", mergedData); // 데이터 확인용 로그
     return mergedData;
   };
 
-
-
-
-
   return (
     <div style={styles.container}>
-      <div style={styles.topSection}>
-        <img src={logo} alt="service-logo" style={styles.image} />
-        <h1>문자 자동생성 서비스</h1>
-        <p>
-          문자, 이미지 자동생성 서비스를 활용하여 편리하게 메시지를 전송하세요.
-        </p>
-      </div>
-
-      <div style={styles.row}>
-        <div style={styles.section}>
-          <div style={styles.labelWithButton}>
-            <label style={styles.label}>메시지</label>
-            <button
-              style={styles.button}
-              onClick={() => navigate("/message-generation")}
-            >
-              문자 자동생성
-            </button>
-          </div>
-          {selectedContacts.length > 0 ? (
-            <>
-              {/* 현재 선택된 연락처의 변환된 메시지 표시 */}
-              <textarea
-                style={styles.textArea}
-                value={
-                  convertedTexts[selectedContacts[currentContactIndex]?.id] ||
-                  message
-                }
-                onChange={(e) => {
-                  const updatedMessage = e.target.value;
-                  setConvertedTexts((prev) => ({
-                    ...prev,
-                    [selectedContacts[currentContactIndex]?.id]: updatedMessage,
-                  }));
-                }}
-              ></textarea>
-
-              {/* 현재 수신자 인덱스 및 이름 표시 */}
-              <p style={styles.contactInfo}>
-                {`수신자 ${currentContactIndex + 1} / ${
-                  selectedContacts.length
-                } : ${selectedContacts[currentContactIndex].name}`}
-              </p>
-
-              {/* 이전/다음 버튼 */}
-              <div style={styles.navigationButtons}>
-                <button
-                  style={styles.navButton}
-                  disabled={currentContactIndex === 0}
-                  onClick={() =>
-                    setCurrentContactIndex((prevIndex) =>
-                      Math.max(prevIndex - 1, 0)
-                    )
-                  }
-                >
-                  이전
-                </button>
-                <button
-                  style={styles.navButton}
-                  disabled={currentContactIndex === selectedContacts.length - 1}
-                  onClick={() =>
-                    setCurrentContactIndex((prevIndex) =>
-                      Math.min(prevIndex + 1, selectedContacts.length - 1)
-                    )
-                  }
-                >
-                  다음
-                </button>
-              </div>
-            </>
-          ) : (
-            <>
-              {/* 선택된 연락처가 없을 경우 기본 메시지 입력 */}
-              <textarea
-                style={styles.textArea}
-                placeholder="메시지를 입력하세요"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-              ></textarea>
-            </>
-          )}
+      <div style={styles.contactListSection}>
+        <div style={styles.topSection}>
+          <img src={logo} alt="service-logo" style={styles.image} />
+          <h1>문자 자동생성 서비스</h1>
+          <p>
+            문자, 이미지 자동생성 서비스를 활용하여 편리하게 메시지를
+            전송하세요.
+          </p>
         </div>
 
-        <div style={styles.section}>
-          <div style={styles.labelWithButton}>
-            <label style={styles.label}>이미지</label>
-            <button style={styles.button} onClick={handleImageGeneration}>
-              이미지 자동생성
-            </button>
-          </div>
-          <div style={styles.imageBox}>
-            {generatedImage ? (
-              <img
-                src={generatedImage}
-                alt="Generated"
-                style={{ maxWidth: "100%", maxHeight: "100%" }}
-              />
+        <div style={styles.row}>
+          <div style={styles.section}>
+            <div style={styles.labelWithButton}>
+              <label style={styles.label}>메시지</label>
+              <button
+                style={styles.button}
+                onClick={() => navigate("/message-generation")}
+              >
+                문자 자동생성
+              </button>
+            </div>
+            {selectedContacts.length > 0 ? (
+              <>
+                {/* 현재 선택된 연락처의 변환된 메시지 표시 */}
+                <textarea
+                  style={styles.textArea}
+                  value={
+                    convertedTexts[selectedContacts[currentContactIndex]?.id] ||
+                    message
+                  }
+                  onChange={(e) => {
+                    const updatedMessage = e.target.value;
+                    setConvertedTexts((prev) => ({
+                      ...prev,
+                      [selectedContacts[currentContactIndex]?.id]:
+                        updatedMessage,
+                    }));
+                  }}
+                ></textarea>
+
+                {/* 현재 수신자 인덱스 및 이름 표시 */}
+                <p style={styles.contactInfo}>
+                  {`수신자 ${currentContactIndex + 1} / ${
+                    selectedContacts.length
+                  } : ${selectedContacts[currentContactIndex].name}`}
+                </p>
+
+                {/* 이전/다음 버튼 */}
+                <div style={styles.navigationButtons}>
+                  <button
+                    style={styles.navButton}
+                    disabled={currentContactIndex === 0}
+                    onClick={() =>
+                      setCurrentContactIndex((prevIndex) =>
+                        Math.max(prevIndex - 1, 0)
+                      )
+                    }
+                  >
+                    이전
+                  </button>
+                  <button
+                    style={styles.navButton}
+                    disabled={
+                      currentContactIndex === selectedContacts.length - 1
+                    }
+                    onClick={() =>
+                      setCurrentContactIndex((prevIndex) =>
+                        Math.min(prevIndex + 1, selectedContacts.length - 1)
+                      )
+                    }
+                  >
+                    다음
+                  </button>
+                </div>
+              </>
             ) : (
-              "이미지가 여기에 표시됩니다."
+              <>
+                {/* 선택된 연락처가 없을 경우 기본 메시지 입력 */}
+                <textarea
+                  style={styles.textArea}
+                  placeholder="메시지를 입력하세요"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                ></textarea>
+              </>
             )}
           </div>
-        </div>
-      </div>
 
-      {/* 주소록을 메시지와 이미지 자동생성 바로 아래에 배치 */}
-      <div style={styles.contactListSection}>
+          <div style={styles.section}>
+            <div style={styles.labelWithButton}>
+              <label style={styles.label}>이미지</label>
+              <button style={styles.button} onClick={handleImageGeneration}>
+                이미지 자동생성
+              </button>
+            </div>
+            <div style={styles.imageBox}>
+              {generatedImage ? (
+                <img
+                  src={generatedImage}
+                  alt="Generated"
+                  style={{ maxWidth: "100%", maxHeight: "100%" }}
+                />
+              ) : (
+                "이미지가 여기에 표시됩니다."
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* 주소록을 메시지와 이미지 자동생성 바로 아래에 배치 */}
+
         <ContactList
           message={message}
           setMessage={setMessage}
@@ -264,13 +263,12 @@ const MainPage = () => {
           selectedContacts={selectedContacts}
           setSelectedContacts={setSelectedContacts}
         />
-      </div>
-
-      {/* 전송하기 버튼을 주소록 바로 아래에 배치 */}
-      <div style={styles.sendButtonContainer}>
-        <button style={styles.sendButton} onClick={handleSendButtonClick}>
-          전송하기
-        </button>
+        {/* 전송하기 버튼을 주소록 바로 아래에 배치 */}
+        <div style={styles.sendButtonContainer}>
+          <button style={styles.sendButton} onClick={handleSendButtonClick}>
+            전송하기
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -391,13 +389,17 @@ const styles = {
     marginTop: "20px",
   },
   contactListSection: {
-    width: "100%",
+    width: "1200px",
     maxWidth: "1200px",
   },
   sendButtonContainer: {
     display: "flex",
-    justifyContent: "center",
-    marginTop: "20px", // 전송하기 버튼과 주소록 사이의 간격
+    justifyContent: "center", // 가로 중앙 정렬
+    position: "sticky", // 스크롤 시 가로 위치 고정
+    top: "0", // 위에서부터 0px 떨어진 상태로 유지
+    width: "100%", // 부모 컨테이너 너비 유지
+    backgroundColor: "white", // 버튼 배경색 설정 (필요 시 변경 가능)
+    zIndex: 10, // 다른 요소보다 위에 표시되도록 설정
   },
   sendButton: {
     backgroundColor: "#4A90E2",
@@ -408,9 +410,10 @@ const styles = {
     fontWeight: "bold",
     borderRadius: "8px",
     cursor: "pointer",
-    width: "200px", // 버튼 크기 지정
+    width: "200px",
     textAlign: "center",
   },
+
   navigationButtons: {
     display: "flex",
     justifyContent: "space-between",
