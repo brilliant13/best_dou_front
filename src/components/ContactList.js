@@ -226,6 +226,14 @@ const ContactList = ({
       contact.id === contactId ? { ...contact, ...editData } : contact
     );
     setContacts(updatedContacts);
+
+    // 선택된 연락처도 업데이트
+    setSelectedContacts((prevSelected) =>
+      prevSelected.map((contact) =>
+        contact.id === contactId ? { ...contact, ...editData } : contact
+      )
+    );
+
     setIsEditing(null); // 수정 모드 종료
   };
 
