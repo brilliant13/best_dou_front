@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import tonesobj from "../data/tones.json";
 import MessageAnimation from "../components/MessageAnimation";
+import Message2Animation from "../components/MessageAnimation";
 
 
 const PersonalizationModal = ({
@@ -10,6 +11,10 @@ const PersonalizationModal = ({
   convertedTexts,
   setConvertedTexts,
   onComplete,
+//추가
+setContacts, // 추가
+//
+
 }) => {
   // 톤 선택 버튼을 렌더링하기 위한 톤 목록
   const tones = tonesobj;
@@ -30,6 +35,54 @@ const PersonalizationModal = ({
       }));
     }
   };
+
+  // const handleToneSelection = (toneInstruction) => {
+  //   if (currentContact) {
+  //     setSelectedTones((prev) => ({
+  //       ...prev,
+  //       [currentContact.id]: toneInstruction,
+  //     }));
+
+  //     // ContactList의 contacts 배열 업데이트
+  //     setContacts((prevContacts) =>
+  //       prevContacts.map((contact) =>
+  //         contact.id === currentContact.id
+  //           ? { ...contact, tone: toneInstruction }
+  //           : contact
+  //       )
+  //     );
+  //   }
+  // };
+  ///추가
+  // const handleComplete = () => {
+  //   // 완료 버튼 클릭 시 업데이트된 톤을 부모 컴포넌트로 전달
+  //   const updatedContacts = selectedContacts.map((contact) => ({
+  //     ...contact,
+  //     tone: selectedTones[contact.id],
+  //   }));
+  //   setContacts(updatedContacts); // ContactList의 contacts 배열 업데이트
+  //   closeModal();
+  // };
+  // //
+
+  const handleComplete = () => {
+    // 완료 버튼 클릭 시 업데이트된 톤을 부모 컴포넌트로 전달
+    const updatedContacts = selectedContacts.map((contact) => ({
+      ...contact,
+      tone: selectedTones[contact.id],
+    }));
+    setContacts((prevContacts) =>
+      prevContacts.map((contact) =>
+        updatedContacts.find((updated) => updated.id === contact.id) || contact
+      )
+    ); // 부모의 contacts 배열 업데이트
+    closeModal();
+  };
+
+
+
+
+
 
   const handlePrev = () => {
     setCurrentIndex((prevIndex) => Math.max(prevIndex - 1, 0));
@@ -92,6 +145,7 @@ const PersonalizationModal = ({
     Tags: "${tag}"
     Memo: "${memo}"
     Examples for this tone:
+    
     ${examplesText}
   `;
     setLoading(true);
@@ -259,9 +313,15 @@ const PersonalizationModal = ({
           <button onClick={closeModal} style={styles.closeButton}>
             닫기
           </button>
-          <button onClick={onComplete} style={styles.completeButton}>
+          {/* <button onClick={onComplete} style={styles.completeButton}>
+            완료
+          </button> */}
+          <button onClick={handleComplete} style={styles.completeButton}>
             완료
           </button>
+
+
+
         </div>
       </div>
     </div>

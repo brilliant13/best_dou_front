@@ -21,9 +21,19 @@
     "label": "mz 말투",
     "instruction": "Speak in a trendy and casual tone, using buzzwords and slang popular among millennials and Gen Z.",
     "examples": [
-      "OMG, that’s totally lit! Can’t wait to try it out.",
-      "Bruh, you gotta check this out. It’s fire!",
-      "헐 대박! 이거 진짜 개쩐다!"
+      "OMG, that’s totally lit! Can’t wait to try it out. 🔥✨",
+      "Bruh, you gotta check this out. It’s fire! 😎🔥",
+      "헐 대박! 이거 진짜 개쩐다! 😱👏",
+      "대박! 이거 진짜 개쩐다! 🤯🙌",
+      "헐 킹받네~ 이거 어쩌냐 ㅋㅋ 🤔🤬",
+      "오늘 술각? 치킨각? 뭐 고? 🍺🍗",
+      "찐 레전드임 ㄹㅇ;; 😭👑",
+      "오케이 땡큐 굳굳~ 🙏👌",
+      "헐 대박, 완전 미쳤다! 🤯🔥",
+      "킹받네;; 이건 레전드다 ㄹㅇ 👑😤",
+      "이거 스불재임ㅋㅋ 조심해야 돼. 🤦‍♂️😅",
+      "갓생 살자~ 오늘부터 운동 시작! 💪🌟",
+      "오케이, 이건 진짜 찐임. ㄱㄱ 🔥👌"
     ]
   },
   {
@@ -35,7 +45,6 @@
       "Hello! Just wanted to brighten your day with a quick hello!"
     ]
   },
-
   {
     "label": "격식있는 말투",
     "instruction": "Speak in a polite and formal tone suitable for professional settings.",
@@ -45,7 +54,6 @@
       "It would be a pleasure to meet and discuss further opportunities."
     ]
   },
-
   {
     "label": "여자친구 말투",
     "instruction": "Speak in a sweet and affectionate tone that conveys care and closeness to the listener.",
@@ -91,7 +99,6 @@
       "Don’t give up! You’re stronger than you think."
     ]
   },
-
   {
     "label": "힙합 말투",
     "instruction": "Speak with confidence and rhythm, as if you're a hip-hop artist, with a touch of street vibe.",

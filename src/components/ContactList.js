@@ -309,6 +309,9 @@ const ContactList = ({
           convertedTexts={convertedTexts}
           setConvertedTexts={setConvertedTexts} // 수신자별 메시지를 업데이트
           onComplete={() => setIsModalOpen(false)} // 완료 후 모달 닫기
+          //추가
+          setContacts={setContacts} // 추가
+          //
         />
       )}
 
