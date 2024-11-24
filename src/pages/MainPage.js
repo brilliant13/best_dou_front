@@ -455,7 +455,13 @@ const styles = {
     lineHeight: "1.5",
     outline: "none",
     marginBottom: "10px",
+    fontSize: "18px", 
+    fontFamily: "'Arial', sans-serif", // 폰트 설정
+    fontWeight: "bold", // 글씨를 bold로 설정
   },
+
+
+
   imageBox: {
     width: "100%",
     height: "400px",
@@ -471,6 +477,8 @@ const styles = {
     boxSizing: "border-box",
     fontSize: "20px",
     color: "#A9A9A9",
+    fontFamily: "'Arial', sans-serif", // 폰트 설정
+    fontWeight: "bold", //bold로 설정
   },
   chatbotButton: {
     backgroundColor: "#4A90E2",
