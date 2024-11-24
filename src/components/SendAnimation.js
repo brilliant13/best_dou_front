@@ -1,17 +1,17 @@
-// components/MessageAnimation.js
+// components/SendAnimation.js
 import React from 'react';
 import { Player } from '@lottiefiles/react-lottie-player';
-import messageAnimationData from '../animations/message2Enimation.json'; // Lottie 애니메이션 JSON 파일
+import animationData from '../animations/sendAnimation.json'; // Lottie 애니메이션 JSON 파일
 
-const MessageAnimation = () => {
+const SendAnimation = () => {
   return (
     <div style={styles.overlay}>
       <Player
         autoplay
         loop
-        src={messageAnimationData}
+        src={animationData}
         style={{ 
-            backgroundColor: "transparent",  height: '450px', width: '450px' }}
+            backgroundColor: "transparent",  height: '250px', width: '250px' }}
       />
     </div>
   );
@@ -32,4 +32,4 @@ const styles = {
   },
 };
 
-export default MessageAnimation;
+export default SendAnimation;
