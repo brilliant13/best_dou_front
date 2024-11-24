@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import tonesobj from "../data/tones.json";
 import MessageAnimation from "../components/MessageAnimation";
+import Message2Animation from "../components/MessageAnimation";
 
 
 const PersonalizationModal = ({
