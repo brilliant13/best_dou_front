@@ -122,28 +122,59 @@ const MainPage = () => {
     setIsLoading(false);
   };
 
-  const mergePhoneAndMessages = () => {
-    const mergedData = selectedContacts.map((contact) => {
-      const message = convertedTexts[contact.id] || ""; // 선택된 연락처에 해당하는 메시지 내용 가져오기
-      const imageBase64 = generatedImage?.split(",")[1] || null; // Base64 데이터만 추출
+  // const mergePhoneAndMessages = () => {
+  //   const mergedData = selectedContacts.map((contact) => {
+  //     const message = convertedTexts[contact.id] || ""; // 선택된 연락처에 해당하는 메시지 내용 가져오기
+  //     const imageBase64 = generatedImage?.split(",")[1] || null; // Base64 데이터만 추출
 
-      // 디버깅: 이미지 데이터 크기 확인
-      if (imageBase64) {
-        console.log(`Image Base64 Size (before): ${imageBase64.length}`);
-        const calculatedSize = Math.floor((imageBase64.length * 3) / 4); // Base64 원본 크기 계산
-        console.log(`Calculated Original Size: ${calculatedSize}`);
-      }
+  //     // 디버깅: 이미지 데이터 크기 확인
+  //     if (imageBase64) {
+  //       console.log(`Image Base64 Size (before): ${imageBase64.length}`);
+  //       const calculatedSize = Math.floor((imageBase64.length * 3) / 4); // Base64 원본 크기 계산
+  //       console.log(`Calculated Original Size: ${calculatedSize}`);
+  //     }
 
-      return {
-        recipientPhoneNumber: contact.phone, // 전화번호
-        messageContent: message, // 메시지 내용
-        imageBase64: imageBase64, // Base64 데이터 전달
-      };
-    });
+  //     return {
+  //       recipientPhoneNumber: contact.phone, // 전화번호
+  //       messageContent: message, // 메시지 내용
+  //       imageBase64: imageBase64, // Base64 데이터 전달
+  //     };
+  //   });
 
-    console.log("Merged Data:", JSON.stringify(mergedData, null, 2)); // 병합된 데이터 확인
-    return mergedData;
-  };
+  //   console.log("Merged Data:", JSON.stringify(mergedData, null, 2)); // 병합된 데이터 확인
+  //   return mergedData;
+  // };
+
+//추가
+const mergePhoneAndMessages = () => {
+  const mergedData = selectedContacts.map((contact) => {
+    const message = convertedTexts[contact.id] || ""; // 선택된 연락처에 해당하는 메시지 내용 가져오기
+    const imageBase64 = generatedImage?.split(",")[1] || null; // Base64 데이터만 추출
+
+    // 디버깅: 이미지 데이터 크기 확인
+    if (imageBase64) {
+      console.log(`Image Base64 Size (before): ${imageBase64.length}`);
+      const calculatedSize = Math.floor((imageBase64.length * 3) / 4); // Base64 원본 크기 계산
+      console.log(`Calculated Original Size: ${calculatedSize}`);
+    }
+
+    return {
+      recipientPhoneNumber: contact.phone, // 전화번호
+      messageContent: message, // 메시지 내용
+      imageBase64: imageBase64, // Base64 데이터 전달
+    };
+  });
+
+  console.log("Merged Data:", JSON.stringify(mergedData, null, 2)); // 병합된 데이터 확인
+  return mergedData;
+};
+
+//
+
+
+
+
+
 
   return (
     <div style={styles.container}>
@@ -175,6 +206,7 @@ const MainPage = () => {
           </div>
           {selectedContacts.length > 0 ? (
             <>
+            {/* ////////////////////////////////////////////////////////////////////////////// */}
               {/* 현재 선택된 연락처의 변환된 메시지 표시 */}
               <textarea
                 style={styles.textArea}
@@ -224,7 +256,9 @@ const MainPage = () => {
                 </button>
               </div>
             </>
-          ) : (
+          ) 
+          ////////////////////////////////////////////////////////////////////////////////////////////////////
+          : (
             <>
               {/* 선택된 연락처가 없을 경우 기본 메시지 입력 */}
               <textarea
