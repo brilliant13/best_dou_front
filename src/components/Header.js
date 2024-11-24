@@ -1,25 +1,23 @@
-// 공통 헤더 컴포넌트
-import React from 'react';
-import { Link } from 'react-router-dom';
-import logo from '../assets/images/logo.png'; // 로고 이미지 경로
+import React from "react";
+import { Link } from "react-router-dom";
+import logo from "../assets/images/logo.png"; // 로고 이미지 경로
 
 const Header = () => {
   return (
     <header style={styles.header}>
+      {/* 왼쪽: 로고 */}
       <div style={styles.leftSection}>
-        <img src={logo} alt="Logo" style={styles.logo} />
-        <span style={styles.brand}>최고다우</span>
+        <Link to="/" style={styles.logoLink}>
+          <img src={logo} alt="Logo" style={styles.logo} />
+        </Link>
       </div>
-      <nav style={styles.nav}>
-        <Link to="/" style={styles.navLink}>Home</Link>
-        <Link to="/updates" style={styles.navLink}>Updates</Link>
-        <Link to="/services" style={styles.navLink}>Services</Link>
-        <Link to="/features" style={styles.navLink}>Features</Link>
-        <Link to="/about" style={styles.navLink}>About Us</Link>
-      </nav>
+
+      {/* 가운데: 브랜드 이름 */}
+      <h1 style={styles.brand}>BESTDAOU</h1>
+
+      {/* 오른쪽: 사용자 이름 */}
       <div style={styles.rightSection}>
-        <button style={styles.signupButton}>Sign Up</button>
-        <button style={styles.loginButton}>Log In</button>
+        <span style={styles.userName}>최고다우님</span>
       </div>
     </header>
   );
@@ -27,60 +25,47 @@ const Header = () => {
 
 const styles = {
   header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '10px 50px',
-    borderBottom: '1px solid #ccc',
-    backgroundColor: 'white',
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "#ffffff", // 흰색 배경
+    height: "80px",
+    padding: "0 20px",
+    position: "fixed",
+    width: "100%",
+    top: 0,
     zIndex: 1000,
+    boxShadow: "0 1px 5px rgba(0, 0, 0, 0.1)", // 부드러운 그림자 추가
   },
   leftSection: {
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
+  },
+  logoLink: {
+    textDecoration: "none",
   },
   logo: {
-    width: '40px',
-    height: '40px',
-    marginRight: '10px',
+    width: "60px",
+    height: "60px",
   },
   brand: {
-    fontSize: '24px',
-    fontWeight: 'bold',
-  },
-  nav: {
-    display: 'flex',
-    justifyContent: 'center',
-    flex: 1,
-  },
-  navLink: {
-    margin: '0 15px',
-    fontSize: '16px',
-    textDecoration: 'none',
-    color: 'black',
+    fontSize: "27px",
+    fontWeight: "bold",
+    color: "#4A90E2", // 부드러운 파란색으로 브랜드 이름 설정
+    marginLeft: "69px",
   },
   rightSection: {
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
   },
-  signupButton: {
-    backgroundColor: '#ffffff',
-    color: '#007bff',
-    border: '2px solid #007bff',
-    borderRadius: '5px',
-    padding: '5px 15px',
-    marginRight: '10px',
-    cursor: 'pointer',
-    fontSize: '16px',
-  },
-  loginButton: {
-    backgroundColor: '#007bff',
-    color: 'white',
-    border: 'none',
-    borderRadius: '5px',
-    padding: '5px 15px',
-    cursor: 'pointer',
-    fontSize: '16px',
+  userName: {
+    fontSize: "24px",
+    fontWeight: "500", // 더 부드러운 굵기
+    color: "black",
+    whiteSpace: "nowrap",
+    marginRight: "70px",
+    fontFamily: "'Noto Sans KR', sans-serif", // Google Fonts 적용
+    letterSpacing: "0.5px", // 자간 조정으로 읽기 편하게
   },
 };
 
