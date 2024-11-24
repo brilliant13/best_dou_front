@@ -18,6 +18,8 @@ const MainPage = () => {
   const [convertedTexts, setConvertedTexts] = useState({}); // 수신자별 메시지 상태
   const [selectedContacts, setSelectedContacts] = useState([]); // 선택된 연락처 목록
   const [currentContactIndex, setCurrentContactIndex] = useState(0); //현재 어떤 수신자인지 인덱스 표시
+  const [isHovered, setIsHovered] = useState(false);
+
   console.log(convertedTexts);
   console.log(selectedContacts);
   // 메시지에서 키워드를 추출하는 함수
@@ -243,7 +245,16 @@ const MainPage = () => {
         <div style={styles.section}>
           <div style={styles.labelWithButton}>
             <label style={styles.label}>이미지</label>
-            <button style={styles.button} onClick={handleImageGeneration}>
+            <button
+              style={
+                isHovered
+                  ? { ...styles.button, ...styles.buttonHover }
+                  : styles.button
+              }
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+              onClick={handleImageGeneration}
+            >
               이미지 자동생성
             </button>
           </div>
@@ -356,14 +367,21 @@ const styles = {
     marginRight: "10px", // 버튼과 약간의 간격 추가
   },
   button: {
-    backgroundColor: "#4A90E2",
+    background: "linear-gradient(to right, #4A90E2, #007BFF)", // 그라데이션 효과
     color: "white",
     border: "none",
-    padding: "10px 20px",
-    fontSize: "14px",
-    borderRadius: "5px",
+    padding: "12px 25px",
+    fontSize: "16px",
+    fontWeight: "bold",
+    borderRadius: "25px", // 둥근 모서리
     cursor: "pointer",
     transition: "0.3s",
+    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)", // 그림자 추가
+  },
+  buttonHover: {
+    background: "linear-gradient(to right, #007BFF, #4A90E2)", // 반전된 그라데이션
+    boxShadow: "0px 6px 8px rgba(0, 0, 0, 0.2)", // hover 시 더 강한 그림자
+    transform: "scale(1.05)", // 살짝 확대
   },
   textArea: {
     width: "100%",
