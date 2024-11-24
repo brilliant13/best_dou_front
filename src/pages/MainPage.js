@@ -18,10 +18,8 @@ const MainPage = () => {
   const [convertedTexts, setConvertedTexts] = useState({}); // 수신자별 메시지 상태
   const [selectedContacts, setSelectedContacts] = useState([]); // 선택된 연락처 목록
   const [currentContactIndex, setCurrentContactIndex] = useState(0); //현재 어떤 수신자인지 인덱스 표시
-  const [isHovered, setIsHovered] = useState(false);
-
-  console.log(convertedTexts);
-  console.log(selectedContacts);
+  const [isMessageHovered, setIsMessageHovered] = useState(false);
+  const [isImageHovered, setIsImageHovered] = useState(false);
   // 메시지에서 키워드를 추출하는 함수
   const extractKeywords = async (message) => {
     try {
@@ -91,19 +89,6 @@ const MainPage = () => {
     }
   };
 
-  // const handleSendButtonClick = async () => {
-  //   const mergedData = mergePhoneAndMessages(); // 데이터 생성
-
-  //   try {
-  //     const response = await sendMessages(mergedData); // API 호출
-  //     console.log("서버 응답:", response.data);
-  //     alert("메시지가 성공적으로 전송되었습니다!");
-  //   } catch (error) {
-  //     console.error("메시지 전송 실패:", error);
-  //     alert("메시지 전송 중 오류가 발생했습니다. 다시 시도해주세요.");
-  //   }
-  // };
-
   const handleSendButtonClick = async () => {
     const mergedData = mergePhoneAndMessages(); // 데이터 병합 (전화번호, 메시지, 이미지)
 
@@ -121,19 +106,6 @@ const MainPage = () => {
     }
   };
 
-  // phone과 convertedTexts를 합쳐 새로운 객체 생성
-  // const mergePhoneAndMessages = () => {
-  //   const mergedData = selectedContacts.map((contact) => {
-  //     const message = convertedTexts[contact.id] || ""; // 해당 ID의 문자 내용을 가져옴
-  //     return {
-  //       recipientPhoneNumber: contact.phone, // phone을 recipientPhoneNumber로 저장
-  //       messageContent: message, // message를 messageContent로 저장
-  //     };
-  //   });
-
-  //   console.log("Merged Data:", mergedData); // 결과 확인용
-  //   return mergedData;
-  // };
   const mergePhoneAndMessages = () => {
     const mergedData = selectedContacts.map((contact) => {
       const message = convertedTexts[contact.id] || ""; // 선택된 연락처에 해당하는 메시지 내용 가져오기
@@ -172,7 +144,13 @@ const MainPage = () => {
           <div style={styles.labelWithButton}>
             <label style={styles.label}>메시지</label>
             <button
-              style={styles.button}
+              style={
+                isMessageHovered
+                  ? { ...styles.messageButton, ...styles.messageButtonHover }
+                  : styles.messageButton
+              }
+              onMouseEnter={() => setIsMessageHovered(true)}
+              onMouseLeave={() => setIsMessageHovered(false)}
               onClick={() => navigate("/message-generation")}
             >
               문자 자동생성
@@ -247,12 +225,12 @@ const MainPage = () => {
             <label style={styles.label}>이미지</label>
             <button
               style={
-                isHovered
-                  ? { ...styles.button, ...styles.buttonHover }
-                  : styles.button
+                isImageHovered
+                  ? { ...styles.imageButton, ...styles.imageButtonHover }
+                  : styles.imageButton
               }
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
+              onMouseEnter={() => setIsImageHovered(true)}
+              onMouseLeave={() => setIsImageHovered(false)}
               onClick={handleImageGeneration}
             >
               이미지 자동생성
@@ -366,22 +344,39 @@ const styles = {
     color: "black",
     marginRight: "10px", // 버튼과 약간의 간격 추가
   },
-  button: {
-    background: "linear-gradient(to right, #4A90E2, #007BFF)", // 그라데이션 효과
+  messageButton: {
+    background: "#4A90E2",
     color: "white",
     border: "none",
     padding: "12px 25px",
     fontSize: "16px",
     fontWeight: "bold",
-    borderRadius: "25px", // 둥근 모서리
+    borderRadius: "25px",
     cursor: "pointer",
     transition: "0.3s",
-    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)", // 그림자 추가
+    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
   },
-  buttonHover: {
-    background: "linear-gradient(to right, #007BFF, #4A90E2)", // 반전된 그라데이션
-    boxShadow: "0px 6px 8px rgba(0, 0, 0, 0.2)", // hover 시 더 강한 그림자
-    transform: "scale(1.05)", // 살짝 확대
+  messageButtonHover: {
+    background: "#007BFF",
+    transform: "scale(1.05)",
+    boxShadow: "0px 6px 8px rgba(0, 0, 0, 0.2)",
+  },
+  imageButton: {
+    background: "linear-gradient(to right, #4A90E2, #007BFF)",
+    color: "white",
+    border: "none",
+    padding: "12px 25px",
+    fontSize: "16px",
+    fontWeight: "bold",
+    borderRadius: "25px",
+    cursor: "pointer",
+    transition: "0.3s",
+    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+  },
+  imageButtonHover: {
+    background: "linear-gradient(to right, #007BFF, #4A90E2)",
+    transform: "scale(1.1)",
+    boxShadow: "0px 8px 12px rgba(0, 0, 0, 0.2)",
   },
   textArea: {
     width: "100%",
