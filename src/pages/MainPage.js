@@ -103,7 +103,7 @@ const MainPage = () => {
 
   const handleSendButtonClick = async () => {
     const mergedData = mergePhoneAndMessages(); // 데이터 병합 (전화번호, 메시지, 이미지)
-
+    console.log(mergedData);
     try {
       console.log(
         "Sending data to backend:",

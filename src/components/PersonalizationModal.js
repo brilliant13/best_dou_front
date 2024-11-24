@@ -93,6 +93,7 @@ const PersonalizationModal = ({
     Tags: "${tag}"
     Memo: "${memo}"
     Examples for this tone:
+    
     ${examplesText}
   `;
     setLoading(true);
