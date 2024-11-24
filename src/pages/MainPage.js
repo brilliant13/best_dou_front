@@ -1,4 +1,7 @@
 //src/pages/MainPage.js
+import { FiRotateCw } from "react-icons/fi"; // 되돌리기 아이콘
+import { AiOutlineClose } from "react-icons/ai"; // 삭제 아이콘
+
 import React, { useState } from "react";
 import ContactList from "../components/ContactList";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -6,7 +9,7 @@ import logo from "../assets/images/logo.png";
 import axios from "axios";
 import { DiFirebase } from "react-icons/di";
 import { sendMessages } from "../services/PpurioApiService";
-import SendAnimation from '../components/SendAnimation';
+import SendAnimation from "../components/SendAnimation";
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -15,7 +18,13 @@ const MainPage = () => {
   // 전달된 state에서 메시지와 이미지를 추출
   const messageFromState = location.state?.message || "";
   const [message, setMessage] = useState(messageFromState);
-  const generatedImage = location.state?.generatedImage || null; // Retrieve the generated image URL
+  const [generatedImage, setGeneratedImage] = useState(
+    location.state?.generatedImage
+  ); // 이미지 상태 관리
+  const [isDeleteButtonHovered, setIsDeleteButtonHovered] = useState(false);
+  const [prevImage, setPrevImage] = useState(null); // 이전 이미지를 저장
+
+  //const generatedImage = location.state?.generatedImage || null; // Retrieve the generated image URL
   const [convertedTexts, setConvertedTexts] = useState({}); // 수신자별 메시지 상태
   const [selectedContacts, setSelectedContacts] = useState([]); // 선택된 연락처 목록
   const [currentContactIndex, setCurrentContactIndex] = useState(0); //현재 어떤 수신자인지 인덱스 표시
@@ -246,13 +255,59 @@ const MainPage = () => {
           </div>
           <div style={styles.imageBox}>
             {generatedImage ? (
-              <img
-                src={generatedImage}
-                alt="Generated"
-                style={{ maxWidth: "100%", maxHeight: "100%" }}
-              />
+              <div style={styles.imageContainer}>
+                <img
+                  src={generatedImage}
+                  alt="Generated"
+                  style={{ width: "100%", height: "100%" }}
+                />
+                <button
+                  style={
+                    isDeleteButtonHovered
+                      ? {
+                          ...styles.imageDeleteButton,
+                          ...styles.imageDeleteButtonHover,
+                        }
+                      : styles.imageDeleteButton
+                  }
+                  onClick={() => {
+                    setPrevImage(generatedImage); // 현재 이미지를 이전 이미지로 저장
+                    setGeneratedImage(null); // 현재 이미지를 삭제
+                  }}
+                  onMouseEnter={() => setIsDeleteButtonHovered(true)}
+                  onMouseLeave={() => setIsDeleteButtonHovered(false)}
+                >
+                  <AiOutlineClose size={20} />
+                </button>
+              </div>
             ) : (
-              "이미지가 여기에 표시됩니다."
+              <>
+                {/* 복원 버튼과 텍스트 렌더링 */}
+                {prevImage && (
+                  <button
+                    style={
+                      isDeleteButtonHovered
+                        ? {
+                            ...styles.imageRestoreButton,
+                            ...styles.imageRestoreButtonHover,
+                          }
+                        : styles.imageRestoreButton
+                    }
+                    onClick={() => {
+                      setGeneratedImage(prevImage); // 이전 이미지를 복원
+                      setPrevImage(null); // 복원 후 초기화
+                    }}
+                    onMouseEnter={() => setIsDeleteButtonHovered(true)}
+                    onMouseLeave={() => setIsDeleteButtonHovered(false)}
+                  >
+                    <FiRotateCw size={20} />
+                  </button>
+                )}
+                {/* 박스 중앙에 텍스트 표시 */}
+                <p style={styles.imagePlaceholderText}>
+                  이미지가 여기에 표시됩니다.
+                </p>
+              </>
             )}
           </div>
         </div>
@@ -407,6 +462,7 @@ const styles = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    position: "relative", // 중앙 정렬을 위해 추가
     border: "1px solid #4A90E2",
     backgroundColor: "#ffffff",
     borderRadius: "4px",
@@ -461,6 +517,66 @@ const styles = {
     borderRadius: "5px",
     cursor: "pointer",
     fontSize: "14px",
+  },
+  imageContainer: {
+    position: "relative",
+    width: "100%",
+    height: "100%",
+  },
+  imageDeleteButton: {
+    position: "absolute",
+    top: "10px",
+    right: "10px",
+    backgroundColor: "rgba(128, 128, 128, 0.7)", // 기본 회색
+    color: "white",
+    border: "none",
+    borderRadius: "50%",
+    width: "35px",
+    height: "35px",
+    fontSize: "20px",
+    fontWeight: "bold",
+    cursor: "pointer",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2)",
+    transition: "0.3s ease", // hover 애니메이션 효과
+  },
+  imageDeleteButtonHover: {
+    backgroundColor: "rgba(0, 0, 0, 1)", // 검정색
+    transform: "scale(1.2)", // 크기 확대 효과
+    boxShadow: "0px 6px 8px rgba(0, 0, 0, 0.3)", // 그림자 효과 강화
+  },
+  imageRestoreButton: {
+    position: "absolute",
+    top: "10px",
+    right: "10px",
+    backgroundColor: "rgba(128, 128, 128, 0.7)", // 기본 회색
+    color: "white",
+    border: "none",
+    borderRadius: "50%",
+    width: "35px",
+    height: "35px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    cursor: "pointer",
+    transition: "0.3s ease", // hover 애니메이션 효과
+  },
+  imageRestoreButtonHover: {
+    backgroundColor: "rgba(0, 0, 0, 1)", // 검정색
+    transform: "scale(1.2)", // 크기 확대 효과
+    boxShadow: "0px 6px 8px rgba(0, 0, 0, 0.3)", // 그림자 효과 강화
+  },
+  imagePlaceholderText: {
+    fontSize: "18px",
+    color: "#A9A9A9",
+    textAlign: "center",
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)", // 텍스트를 박스 중앙에 배치
+    pointerEvents: "none", // 클릭 불가
   },
 };
 
