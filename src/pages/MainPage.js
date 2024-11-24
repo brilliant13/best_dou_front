@@ -6,6 +6,7 @@ import logo from "../assets/images/logo.png";
 import axios from "axios";
 import { DiFirebase } from "react-icons/di";
 import { sendMessages } from "../services/PpurioApiService";
+import SendAnimation from '../components/SendAnimation';
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -20,6 +21,8 @@ const MainPage = () => {
   const [currentContactIndex, setCurrentContactIndex] = useState(0); //현재 어떤 수신자인지 인덱스 표시
   const [isMessageHovered, setIsMessageHovered] = useState(false);
   const [isImageHovered, setIsImageHovered] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   // 메시지에서 키워드를 추출하는 함수
   const extractKeywords = async (message) => {
     try {
@@ -97,6 +100,9 @@ const MainPage = () => {
         "Sending data to backend:",
         JSON.stringify(mergedData, null, 2)
       );
+
+      setIsLoading(true); // 전송 상태
+
       const response = await sendMessages(mergedData); // API 호출
       console.log("서버 응답:", response.data);
       alert("메시지가 성공적으로 전송되었습니다!");
@@ -104,6 +110,7 @@ const MainPage = () => {
       console.error("메시지 전송 실패:", error);
       alert("메시지 전송 중 오류가 발생했습니다. 다시 시도해주세요.");
     }
+    setIsLoading(false);
   };
 
   const mergePhoneAndMessages = () => {
@@ -131,6 +138,7 @@ const MainPage = () => {
 
   return (
     <div style={styles.container}>
+      {isLoading && <SendAnimation />}
       <div style={styles.topSection}>
         <img src={logo} alt="service-logo" style={styles.image} />
         <h1>문자 자동생성 서비스</h1>
