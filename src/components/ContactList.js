@@ -160,16 +160,18 @@ const ContactList = ({
       );
 
       if (alreadySelected) {
-        // 선택 해제
-        const updatedContacts = prevSelected.filter(
-          (selected) => selected.id !== contactId
-        );
-        setConvertedTexts((prevTexts) => {
-          const updatedTexts = { ...prevTexts };
-          delete updatedTexts[contactId]; // 해당 ID의 메시지 삭제
-          return updatedTexts;
-        });
-        return updatedContacts;
+        // // 선택 해제
+        // const updatedContacts = prevSelected.filter(
+        //   (selected) => selected.id !== contactId
+        // );
+        // setConvertedTexts((prevTexts) => {
+        //   const updatedTexts = { ...prevTexts };
+        //   delete updatedTexts[contactId]; // 해당 ID의 메시지 삭제
+        //   return updatedTexts;
+        // });
+        // return updatedContacts;
+        // 선택 해제 (convertedTexts는 삭제하지 않음)
+        return prevSelected.filter((selected) => selected.id !== contactId);
       } else {
         // 선택 추가
         setConvertedTexts((prevTexts) => ({
@@ -186,7 +188,6 @@ const ContactList = ({
     if (isAllChecked) {
       // 모든 선택 해제
       setSelectedContacts([]);
-      setConvertedTexts({}); // 모든 메시지 초기화
     } else {
       // 모든 연락처 선택
       const allSelected = filteredContacts.map((contact) => contact);
@@ -311,6 +312,7 @@ const ContactList = ({
           onComplete={() => setIsModalOpen(false)} // 완료 후 모달 닫기
           //추가
           setContacts={setContacts} // 추가
+          message={message}
           //
         />
       )}
