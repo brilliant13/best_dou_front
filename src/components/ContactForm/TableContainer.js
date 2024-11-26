@@ -130,7 +130,7 @@ const TableContainer = ({ contacts, setContacts }) => {
                     >
                       {contact.tag}
                     </span>
-                    {contact.tag.length > 20 && (
+                    {contact.tag && contact.tag.length > 20 && (
                       <button
                         style={styles.moreButton}
                         onClick={() => toggleExpandTag(index)}

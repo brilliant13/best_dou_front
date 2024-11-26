@@ -1,46 +1,6 @@
-// FormContainer.js
 import React, { useState } from "react";
 
-const styles = {
-  title: {
-    textAlign: "center",
-    color: "#000",
-    marginBottom: "20px",
-    fontSize: "24px",
-    fontWeight: "bold",
-  },
-  contactForm: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "20px",
-  },
-  input: {
-    padding: "15px",
-    fontSize: "18px",
-    border: "1px solid #bbdefb",
-    borderRadius: "8px",
-    backgroundColor: "white",
-    transition: "border-color 0.3s",
-  },
-  button: {
-    backgroundColor: "#1e88e5",
-    color: "white",
-    padding: "15px",
-    fontSize: "18px",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-    transition: "background-color 0.3s",
-  },
-  errorMessage: {
-    color: "red",
-    fontSize: "14px",
-    marginTop: "-15px",
-    marginBottom: "10px",
-  },
-};
-
-const FormContainer = ({ contact, setContact, setContacts }) => {
+const FormContainer = ({ contact, setContact, handleAddContact }) => {
   const [phoneError, setPhoneError] = useState("");
 
   const handleChange = (e) => {
@@ -72,7 +32,10 @@ const FormContainer = ({ contact, setContact, setContacts }) => {
       return;
     }
 
-    setContacts((prev) => [...prev, contact]);
+    // handleAddContact를 호출해 새 연락처 추가
+    handleAddContact(contact);
+
+    // 폼 초기화
     setContact({ name: "", phone: "", tag: "", tone: "" });
   };
 
@@ -123,6 +86,45 @@ const FormContainer = ({ contact, setContact, setContacts }) => {
       </form>
     </div>
   );
+};
+
+const styles = {
+  title: {
+    textAlign: "center",
+    color: "#000",
+    marginBottom: "20px",
+    fontSize: "24px",
+    fontWeight: "bold",
+  },
+  contactForm: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "20px",
+  },
+  input: {
+    padding: "15px",
+    fontSize: "18px",
+    border: "1px solid #bbdefb",
+    borderRadius: "8px",
+    backgroundColor: "white",
+    transition: "border-color 0.3s",
+  },
+  button: {
+    backgroundColor: "#1e88e5",
+    color: "white",
+    padding: "15px",
+    fontSize: "18px",
+    border: "none",
+    borderRadius: "8px",
+    cursor: "pointer",
+    transition: "background-color 0.3s",
+  },
+  errorMessage: {
+    color: "red",
+    fontSize: "14px",
+    marginTop: "-15px",
+    marginBottom: "10px",
+  },
 };
 
 export default FormContainer;
