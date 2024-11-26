@@ -32,10 +32,7 @@ const ContactList = ({
   const [editData, setEditData] = useState({ tag: "", memo: "", tone: "" });
 
   const contactsobj = useSelector((state) => state.contacts); // Redux에서 상태 가져오기
-
   const [contacts, setContacts] = useState(contactsobj);
-
-  console.log(contacts);
 
   const generateMessagesForSelectedContacts = () => {
     const texts = selectedContacts.reduce((acc, contact) => {

@@ -127,12 +127,17 @@ const PersonalizationModal = ({
     const examplesText = examples
       .map((example, index) => `Example ${index + 1}: "${example}"`)
       .join("\n");
-    console.log();
+
+    console.log(examplesText);
+
     const prompt = `
     Please rewrite the following message in a tone that is described as follows:
     "${instruction}"
     The message should reflect the person's characteristics, notes, and the given examples.
     The response must be written in Korean and should address the recipient by their name.
+    For example, if the recipient's name is "정웅," address them as "웅아" or if it is "안예찬,"
+    address them as "예찬아." Adjust the tone to reflect whether the sender is a close friend, 
+    older sibling, or younger sibling based on the tags or memo provided.
     Do not include emojis, or emoticons throughout the message.
     Do not include any sign-offs, sender's name, or signatures at the end of the message.
     Original message: "${textToConvert}"
