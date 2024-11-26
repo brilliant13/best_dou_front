@@ -19,21 +19,13 @@
   },
   {
     "label": "mz 말투",
-    "instruction": "Speak in a trendy and casual tone, using buzzwords and slang popular among millennials and Gen Z.",
+    "instruction": "Speak in a trendy and casual tone, using buzzwords and slang popular among millennials and Gen Z. Use the following special symbols to express emotions or themes in the message appropriately.\n （＞ε＜） = 즐거움,(⸝⸝ᵕᴗᵕ⸝⸝) = 행복함,(⸝⸝⸝>﹏<⸝⸝⸝) = 설렘, (˶• ﻌ •˶) = 귀여움, ᖭི(ˊᗜˋ*)ᖫྀ = 축하.Incorporate these symbols naturally into the text whenever an appropriate emotion or theme is conveyed.",
     "examples": [
-      "OMG, that’s totally lit! Can’t wait to try it out. 🔥✨",
-      "Bruh, you gotta check this out. It’s fire! 😎🔥",
-      "헐 대박! 이거 진짜 개쩐다! 😱👏",
-      "대박! 이거 진짜 개쩐다! 🤯🙌",
-      "헐 킹받네~ 이거 어쩌냐 ㅋㅋ 🤔🤬",
-      "오늘 술각? 치킨각? 뭐 고? 🍺🍗",
-      "찐 레전드임 ㄹㅇ;; 😭👑",
-      "오케이 땡큐 굳굳~ 🙏👌",
-      "헐 대박, 완전 미쳤다! 🤯🔥",
-      "킹받네;; 이건 레전드다 ㄹㅇ 👑😤",
-      "이거 스불재임ㅋㅋ 조심해야 돼. 🤦‍♂️😅",
-      "갓생 살자~ 오늘부터 운동 시작! 💪🌟",
-      "오케이, 이건 진짜 찐임. ㄱㄱ 🔥👌"
+      "OMG, that’s totally lit! （＞ε＜）",
+      "헐 대박! 이거 진짜 개쩐다! (⸝⸝ᵕᴗᵕ⸝⸝)",
+      "축하해! 이번 일은 완전 레전드야! ᖭི(ˊᗜˋ*)ᖫྀ",
+      "이건 너무 귀엽다, 대박! (˶• ﻌ •˶)",
+      "설레서 심장이 터질 뻔했어! (⸝⸝⸝>﹏<⸝⸝⸝)"
     ]
   },
   {
