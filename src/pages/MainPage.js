@@ -1,7 +1,7 @@
 //src/pages/MainPage.js
 import { FiRotateCw } from "react-icons/fi"; // 되돌리기 아이콘
 import { AiOutlineClose } from "react-icons/ai"; // 삭제 아이콘
-
+import { AiOutlineUpload } from "react-icons/ai"; // 업로드 아이콘 추가
 import React, { useState } from "react";
 import ContactList from "../components/ContactList";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -30,6 +30,7 @@ const MainPage = () => {
   const [currentContactIndex, setCurrentContactIndex] = useState(0); //현재 어떤 수신자인지 인덱스 표시
   const [isMessageHovered, setIsMessageHovered] = useState(false);
   const [isImageHovered, setIsImageHovered] = useState(false);
+  const [isUploadHovered, setIsUploadHovered] = useState(false); // 업로드 버튼 호버 상태
   const [isLoading, setIsLoading] = useState(false);
 
   // 메시지에서 키워드를 추출하는 함수
@@ -122,30 +123,6 @@ const MainPage = () => {
     setIsLoading(false);
   };
 
-  // const mergePhoneAndMessages = () => {
-  //   const mergedData = selectedContacts.map((contact) => {
-  //     const message = convertedTexts[contact.id] || ""; // 선택된 연락처에 해당하는 메시지 내용 가져오기
-  //     const imageBase64 = generatedImage?.split(",")[1] || null; // Base64 데이터만 추출
-
-  //     // 디버깅: 이미지 데이터 크기 확인
-  //     if (imageBase64) {
-  //       console.log(`Image Base64 Size (before): ${imageBase64.length}`);
-  //       const calculatedSize = Math.floor((imageBase64.length * 3) / 4); // Base64 원본 크기 계산
-  //       console.log(`Calculated Original Size: ${calculatedSize}`);
-  //     }
-
-  //     return {
-  //       recipientPhoneNumber: contact.phone, // 전화번호
-  //       messageContent: message, // 메시지 내용
-  //       imageBase64: imageBase64, // Base64 데이터 전달
-  //     };
-  //   });
-
-  //   console.log("Merged Data:", JSON.stringify(mergedData, null, 2)); // 병합된 데이터 확인
-  //   return mergedData;
-  // };
-
-  //추가
   const mergePhoneAndMessages = () => {
     const mergedData = selectedContacts.map((contact) => {
       const message = convertedTexts[contact.id] || ""; // 선택된 연락처에 해당하는 메시지 내용 가져오기
@@ -173,6 +150,7 @@ const MainPage = () => {
     event.preventDefault();
     const file = event.dataTransfer.files[0]; // 드롭한 첫 번째 파일만 처리
 
+    //const file = event.target.files[0]; // 첫 번째 선택한 파일만 처리
     if (file) {
       // 파일 크기 제한: 300KB 미만
       if (file.size >= 300 * 1024) {
@@ -192,6 +170,33 @@ const MainPage = () => {
         const base64Image = e.target.result;
         setGeneratedImage(base64Image); // 상태 업데이트
         setPrevImage(base64Image); // 이전 이미지에도 저장
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleUploadButtonClick = () => {
+    document.getElementById("fileUploadInput").click(); // 숨겨진 파일 입력 요소를 클릭
+  };
+
+  const handleFileSelect = (event) => {
+    const file = event.target.files[0];
+
+    if (file) {
+      if (file.size >= 300 * 1024) {
+        alert("이미지 크기는 300KB 이하이어야 합니다.");
+        return;
+      }
+      if (!file.type.startsWith("image/")) {
+        alert("이미지 파일만 첨부할 수 있습니다.");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const base64Image = e.target.result;
+        setGeneratedImage(base64Image);
+        setPrevImage(base64Image);
       };
       reader.readAsDataURL(file);
     }
@@ -231,7 +236,6 @@ const MainPage = () => {
           </div>
           {selectedContacts.length > 0 ? (
             <>
-              {/* ////////////////////////////////////////////////////////////////////////////// */}
               {/* 현재 선택된 연락처의 변환된 메시지 표시 */}
               <textarea
                 style={styles.textArea}
@@ -298,23 +302,37 @@ const MainPage = () => {
         <div style={styles.section}>
           <div style={styles.labelWithButton}>
             <label style={styles.label}>이미지</label>
-            <button
-              style={
-                isImageHovered
-                  ? { ...styles.imageButton, ...styles.imageButtonHover }
-                  : styles.imageButton
-              }
-              onMouseEnter={() => setIsImageHovered(true)}
-              onMouseLeave={() => setIsImageHovered(false)}
-              onClick={handleImageGeneration}
-            >
-              이미지 자동생성
-            </button>
+            <div style={styles.buttonGroup}>
+              <button
+                style={
+                  isUploadHovered
+                    ? { ...styles.uploadButton, ...styles.uploadButtonHover }
+                    : styles.uploadButton
+                }
+                onClick={handleUploadButtonClick}
+                onMouseEnter={() => setIsUploadHovered(true)}
+                onMouseLeave={() => setIsUploadHovered(false)}
+              >
+                <AiOutlineUpload size={22} />
+              </button>
+              <button
+                style={
+                  isImageHovered
+                    ? { ...styles.imageButton, ...styles.imageButtonHover }
+                    : styles.imageButton
+                }
+                onMouseEnter={() => setIsImageHovered(true)}
+                onMouseLeave={() => setIsImageHovered(false)}
+                onClick={handleImageGeneration}
+              >
+                이미지 자동생성
+              </button>
+            </div>
           </div>
           <div
             style={styles.imageBox}
-            onDrop={handleImageDrop} // 드롭 이벤트
-            onDragOver={handleDragOver} // 드래그 오버 이벤트
+            onDrop={handleImageDrop}
+            onDragOver={handleDragOver}
           >
             {generatedImage ? (
               <div style={styles.imageContainer}>
@@ -333,8 +351,8 @@ const MainPage = () => {
                       : styles.imageDeleteButton
                   }
                   onClick={() => {
-                    setPrevImage(generatedImage); // 현재 이미지를 이전 이미지로 저장
-                    setGeneratedImage(null); // 현재 이미지를 삭제
+                    setPrevImage(generatedImage);
+                    setGeneratedImage(null);
                   }}
                   onMouseEnter={() => setIsDeleteButtonHovered(true)}
                   onMouseLeave={() => setIsDeleteButtonHovered(false)}
@@ -343,33 +361,19 @@ const MainPage = () => {
                 </button>
               </div>
             ) : (
-              <>
-                {prevImage && (
-                  <button
-                    style={
-                      isDeleteButtonHovered
-                        ? {
-                            ...styles.imageRestoreButton,
-                            ...styles.imageRestoreButtonHover,
-                          }
-                        : styles.imageRestoreButton
-                    }
-                    onClick={() => {
-                      setGeneratedImage(prevImage); // 이전 이미지를 복원
-                      setPrevImage(null); // 복원 후 초기화
-                    }}
-                    onMouseEnter={() => setIsDeleteButtonHovered(true)}
-                    onMouseLeave={() => setIsDeleteButtonHovered(false)}
-                  >
-                    <FiRotateCw size={20} />
-                  </button>
-                )}
-                <p style={styles.imagePlaceholderText}>
-                  이미지를 드래그 앤 드롭하여 첨부하세요 (300KB 이하)
-                </p>
-              </>
+              <p style={styles.imagePlaceholderText}>
+                이미지를 드래그 앤 드롭하거나 첨부 버튼을 이용하세요 (300KB
+                이하)
+              </p>
             )}
           </div>
+          <input
+            id="fileUploadInput"
+            type="file"
+            accept="image/*"
+            onChange={handleFileSelect}
+            style={styles.hiddenFileInput}
+          />
         </div>
       </div>
 
@@ -489,6 +493,7 @@ const styles = {
     color: "white",
     border: "none",
     padding: "12px 25px",
+    marginRight: "0px",
     fontSize: "16px",
     fontWeight: "bold",
     borderRadius: "25px",
@@ -537,16 +542,6 @@ const styles = {
     color: "#A9A9A9",
     fontFamily: "'Arial', sans-serif", // 폰트 설정
     fontWeight: "bold", //bold로 설정
-  },
-  chatbotButton: {
-    backgroundColor: "#4A90E2",
-    color: "white",
-    border: "none",
-    padding: "20px 40px",
-    fontSize: "20px",
-    borderRadius: "10px",
-    cursor: "pointer",
-    marginTop: "20px",
   },
   contactListSection: {
     width: "1200px",
@@ -643,6 +638,37 @@ const styles = {
     left: "50%",
     transform: "translate(-50%, -50%)", // 텍스트를 박스 중앙에 배치
     pointerEvents: "none", // 클릭 불가
+  },
+  fileInput: {
+    marginTop: "10px",
+    display: "block",
+    cursor: "pointer",
+    padding: "10px",
+    backgroundColor: "#f9f9f9",
+    border: "1px solid #ccc",
+    borderRadius: "5px",
+    textAlign: "center",
+    fontSize: "14px",
+  },
+  uploadButton: {
+    background: "#4A90E2",
+    color: "white",
+    border: "none",
+    padding: "10px",
+    marginRight: "10px",
+    borderRadius: "10px",
+    alignItems: "center",
+    cursor: "pointer",
+    transition: "0.3s",
+    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+  },
+  uploadButtonHover: {
+    background: "#007BFF",
+    transform: "scale(1.05)",
+    boxShadow: "0px 6px 8px rgba(0, 0, 0, 0.2)",
+  },
+  hiddenFileInput: {
+    display: "none",
   },
 };
 
