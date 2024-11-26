@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import tonesobj from "../data/tones.json";
 import MessageAnimation from "../components/MessageAnimation";
-import Message2Animation from "../components/MessageAnimation";
+import examplesobj from "../data/examples.json"; // 예시목록들 가져오기
 
 const PersonalizationModal = ({
   selectedContacts,
@@ -39,38 +39,16 @@ const PersonalizationModal = ({
         ...prev,
         [currentContact.id]: toneInstruction,
       }));
-      setSelectedToneExamples(tone ? tone.examples : []); // 선택된 어조의 예시 설정
+
+      // examples.json에서 label로 예시 가져오기
+      const matchingExamples = examplesobj.find(
+        (example) => example.label === tone.label
+      );
+      setSelectedToneExamples(
+        matchingExamples ? matchingExamples.examples : []
+      );
     }
   };
-
-  // const handleToneSelection = (toneInstruction) => {
-  //   if (currentContact) {
-  //     setSelectedTones((prev) => ({
-  //       ...prev,
-  //       [currentContact.id]: toneInstruction,
-  //     }));
-
-  //     // ContactList의 contacts 배열 업데이트
-  //     setContacts((prevContacts) =>
-  //       prevContacts.map((contact) =>
-  //         contact.id === currentContact.id
-  //           ? { ...contact, tone: toneInstruction }
-  //           : contact
-  //       )
-  //     );
-  //   }
-  // };
-  ///추가
-  // const handleComplete = () => {
-  //   // 완료 버튼 클릭 시 업데이트된 톤을 부모 컴포넌트로 전달
-  //   const updatedContacts = selectedContacts.map((contact) => ({
-  //     ...contact,
-  //     tone: selectedTones[contact.id],
-  //   }));
-  //   setContacts(updatedContacts); // ContactList의 contacts 배열 업데이트
-  //   closeModal();
-  // };
-  // //
 
   const handleComplete = () => {
     // 완료 버튼 클릭 시 업데이트된 톤을 부모 컴포넌트로 전달
@@ -113,14 +91,20 @@ const PersonalizationModal = ({
             : "기본 말투로",
         };
       });
-      // 선택된 톤의 예시를 초기화
+
+      // examples.json에서 초기 예시 가져오기
       const defaultTone = tones.find(
         (tone) => tone.label === currentContact.tone
       );
       if (defaultTone) {
-        setSelectedToneExamples(defaultTone.examples);
+        const matchingExamples = examplesobj.find(
+          (example) => example.label === defaultTone.label
+        );
+        setSelectedToneExamples(
+          matchingExamples ? matchingExamples.examples : []
+        );
       } else {
-        setSelectedToneExamples([]); // 예시가 없으면 빈 배열로 설정
+        setSelectedToneExamples([]); // 예시가 없으면 빈 배열
       }
     }
   }, [currentContact, tones]);
@@ -146,7 +130,7 @@ const PersonalizationModal = ({
     const examplesText = examples
       .map((example, index) => `Example ${index + 1}: "${example}"`)
       .join("\n");
-
+    console.log();
     const prompt = `
     Please rewrite the following message in a tone that is described as follows:
     "${instruction}"
