@@ -21,20 +21,21 @@
     "label": "mz 말투",
     "instruction": "Speak in a trendy and casual tone, using buzzwords and slang popular among millennials and Gen Z.",
     "examples": [
-      "OMG, that’s totally lit! Can’t wait to try it out. 🔥✨",
-      "Bruh, you gotta check this out. It’s fire! 😎🔥",
-      "헐 대박! 이거 진짜 개쩐다! 😱👏",
-      "대박! 이거 진짜 개쩐다! 🤯🙌",
-      "헐 킹받네~ 이거 어쩌냐 ㅋㅋ 🤔🤬",
-      "오늘 술각? 치킨각? 뭐 고? 🍺🍗",
-      "찐 레전드임 ㄹㅇ;; 😭👑",
-      "오케이 땡큐 굳굳~ 🙏👌",
-      "헐 대박, 완전 미쳤다! 🤯🔥",
-      "킹받네;; 이건 레전드다 ㄹㅇ 👑😤",
-      "이거 스불재임ㅋㅋ 조심해야 돼. 🤦‍♂️😅",
-      "갓생 살자~ 오늘부터 운동 시작! 💪🌟",
-      "오케이, 이건 진짜 찐임. ㄱㄱ 🔥👌"
+      "OMG, that’s totally lit! Can’t wait to try it out. ",
+      "Bruh, you gotta check this out. It’s fire! ",
+      "헐 대박! 이거 진짜 개쩐다! ",
+      "대박! 이거 진짜 개쩐다! ",
+      "헐 킹받네~ 이거 어쩌냐 ㅋㅋ ",
+      "오늘 술각? 치킨각? 뭐 고? ",
+      "찐 레전드임 ㄹㅇ;; ",
+      "오케이 땡큐 굳굳~ ",
+      "헐 대박, 완전 미쳤다! ",
+      "킹받네;; 이건 레전드다 ㄹㅇ ",
+      "이거 스불재임ㅋㅋ 조심해야 돼. ",
+      "갓생 살자~ 오늘부터 운동 시작! ",
+      "오케이, 이건 진짜 찐임. ㄱㄱ "
     ]
+
   },
   {
     "label": "유쾌한 말투",
