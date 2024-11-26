@@ -149,7 +149,8 @@ const PersonalizationModal = ({
     "${instruction}"
     The message should reflect the person's characteristics, notes, and the given examples.
     The response must be written in Korean and should address the recipient by their name.
-
+    Do not include emojis, or emoticons throughout the message.
+    Do not include any sign-offs, sender's name, or signatures at the end of the message.
     Original message: "${textToConvert}"
     Recipient's name: "${currentContact.name}"
     Tags: "${tag}"
