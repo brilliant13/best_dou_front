@@ -661,6 +661,9 @@ const styles = {
     cursor: "pointer",
     transition: "0.3s",
     boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+    position: "relative", // 위치 조정 가능하게 설정
+    top: "2px", // 아래로 5px 이동
+    
   },
   uploadButtonHover: {
     background: "#007BFF",

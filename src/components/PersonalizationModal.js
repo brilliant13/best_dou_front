@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import tonesobj from "../data/tones.json";
 import MessageAnimation from "../components/MessageAnimation";
-import Message2Animation from "../components/MessageAnimation";
+import examplesobj from "../data/examples.json"; // 예시목록들 가져오기
 
 const PersonalizationModal = ({
   selectedContacts,
@@ -27,6 +27,12 @@ const PersonalizationModal = ({
   const [selectedToneExamples, setSelectedToneExamples] = useState([]);
   const handleMouseEnter = () => setIsHovering(true);
   const handleMouseLeave = () => setIsHovering(false);
+  const removeEmojis = (text) => {
+    return text.replace(
+      /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F900}-\u{1F9FF}\u{1FA70}-\u{1FAFF}]/gu,
+      ""
+    );
+  };
 
   // handleToneSelection 함수 추가
   const handleToneSelection = (toneInstruction) => {
@@ -36,38 +42,16 @@ const PersonalizationModal = ({
         ...prev,
         [currentContact.id]: toneInstruction,
       }));
-      setSelectedToneExamples(tone ? tone.examples : []); // 선택된 어조의 예시 설정
+
+      // examples.json에서 label로 예시 가져오기
+      const matchingExamples = examplesobj.find(
+        (example) => example.label === tone.label
+      );
+      setSelectedToneExamples(
+        matchingExamples ? matchingExamples.examples : []
+      );
     }
   };
-
-  // const handleToneSelection = (toneInstruction) => {
-  //   if (currentContact) {
-  //     setSelectedTones((prev) => ({
-  //       ...prev,
-  //       [currentContact.id]: toneInstruction,
-  //     }));
-
-  //     // ContactList의 contacts 배열 업데이트
-  //     setContacts((prevContacts) =>
-  //       prevContacts.map((contact) =>
-  //         contact.id === currentContact.id
-  //           ? { ...contact, tone: toneInstruction }
-  //           : contact
-  //       )
-  //     );
-  //   }
-  // };
-  ///추가
-  // const handleComplete = () => {
-  //   // 완료 버튼 클릭 시 업데이트된 톤을 부모 컴포넌트로 전달
-  //   const updatedContacts = selectedContacts.map((contact) => ({
-  //     ...contact,
-  //     tone: selectedTones[contact.id],
-  //   }));
-  //   setContacts(updatedContacts); // ContactList의 contacts 배열 업데이트
-  //   closeModal();
-  // };
-  // //
 
   const handleComplete = () => {
     // 완료 버튼 클릭 시 업데이트된 톤을 부모 컴포넌트로 전달
@@ -110,14 +94,20 @@ const PersonalizationModal = ({
             : "기본 말투로",
         };
       });
-      // 선택된 톤의 예시를 초기화
+
+      // examples.json에서 초기 예시 가져오기
       const defaultTone = tones.find(
         (tone) => tone.label === currentContact.tone
       );
       if (defaultTone) {
-        setSelectedToneExamples(defaultTone.examples);
+        const matchingExamples = examplesobj.find(
+          (example) => example.label === defaultTone.label
+        );
+        setSelectedToneExamples(
+          matchingExamples ? matchingExamples.examples : []
+        );
       } else {
-        setSelectedToneExamples([]); // 예시가 없으면 빈 배열로 설정
+        setSelectedToneExamples([]); // 예시가 없으면 빈 배열
       }
     }
   }, [currentContact, tones]);
@@ -148,17 +138,18 @@ const PersonalizationModal = ({
     Please rewrite the following message in a tone that is described as follows:
     "${instruction}"
     The message should reflect the person's characteristics, notes, and the given examples.
+    Use appropriate line breaks to enhance readability.
     The response must be written in Korean and should address the recipient by their name.
-    Do not include emojis, or emoticons throughout the message.
     Do not include any sign-offs, sender's name, or signatures at the end of the message.
+    You Never use any emojis or emoticons throughout the message.
     Original message: "${textToConvert}"
     Recipient's name: "${currentContact.name}"
     Tags: "${tag}"
     Memo: "${memo}"
     Examples for this tone:
-    
-    ${examplesText}
+      ${examplesText}
   `;
+
     setLoading(true);
     try {
       const response = await axios.post(
@@ -185,10 +176,13 @@ const PersonalizationModal = ({
         }
       );
 
-      //ContactList의 convertedTexts값 변경
+      // 이모지 제거 후 ContactList의 convertedTexts 업데이트
+      const originalMessage = response.data.choices[0].message.content.trim();
+      const cleanedMessage = removeEmojis(originalMessage);
+
       setConvertedTexts((prev) => ({
         ...prev,
-        [currentContact.id]: response.data.choices[0].message.content.trim(),
+        [currentContact.id]: cleanedMessage,
       }));
     } catch (error) {
       console.error(
@@ -538,10 +532,11 @@ const styles = {
   resetButton: {
     backgroundColor: "white", // 흰색 배경
     color: "black", // 검은 텍스트
+    fontSize: "15px",
     borderWidth: "3px", // 테두리 두께
     borderStyle: "solid", // 테두리 스타일
     borderColor: "#d3d3d3", // 테두리 색상
-    padding: "4px 13px",
+    padding: "7px 10px",
     borderRadius: "6px",
     cursor: "pointer",
     marginLeft: "auto", // 오른쪽 정렬
