@@ -145,36 +145,61 @@ const MainPage = () => {
   //   return mergedData;
   // };
 
-//추가
-const mergePhoneAndMessages = () => {
-  const mergedData = selectedContacts.map((contact) => {
-    const message = convertedTexts[contact.id] || ""; // 선택된 연락처에 해당하는 메시지 내용 가져오기
-    const imageBase64 = generatedImage?.split(",")[1] || null; // Base64 데이터만 추출
+  //추가
+  const mergePhoneAndMessages = () => {
+    const mergedData = selectedContacts.map((contact) => {
+      const message = convertedTexts[contact.id] || ""; // 선택된 연락처에 해당하는 메시지 내용 가져오기
+      const imageBase64 = generatedImage?.split(",")[1] || null; // Base64 데이터만 추출
 
-    // 디버깅: 이미지 데이터 크기 확인
-    if (imageBase64) {
-      console.log(`Image Base64 Size (before): ${imageBase64.length}`);
-      const calculatedSize = Math.floor((imageBase64.length * 3) / 4); // Base64 원본 크기 계산
-      console.log(`Calculated Original Size: ${calculatedSize}`);
+      // 디버깅: 이미지 데이터 크기 확인
+      if (imageBase64) {
+        console.log(`Image Base64 Size (before): ${imageBase64.length}`);
+        const calculatedSize = Math.floor((imageBase64.length * 3) / 4); // Base64 원본 크기 계산
+        console.log(`Calculated Original Size: ${calculatedSize}`);
+      }
+
+      return {
+        recipientPhoneNumber: contact.phone, // 전화번호
+        messageContent: message, // 메시지 내용
+        imageBase64: imageBase64, // Base64 데이터 전달
+      };
+    });
+
+    console.log("Merged Data:", JSON.stringify(mergedData, null, 2)); // 병합된 데이터 확인
+    return mergedData;
+  };
+
+  const handleImageDrop = (event) => {
+    event.preventDefault();
+    const file = event.dataTransfer.files[0]; // 드롭한 첫 번째 파일만 처리
+
+    if (file) {
+      // 파일 크기 제한: 300KB 미만
+      if (file.size >= 300 * 1024) {
+        alert("이미지 크기는 300KB 이하이어야 합니다.");
+        return;
+      }
+
+      // 파일 MIME 타입 확인
+      if (!file.type.startsWith("image/")) {
+        alert("이미지 파일만 첨부할 수 있습니다.");
+        return;
+      }
+
+      // 파일을 Base64로 변환
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const base64Image = e.target.result;
+        setGeneratedImage(base64Image); // 상태 업데이트
+        setPrevImage(base64Image); // 이전 이미지에도 저장
+      };
+      reader.readAsDataURL(file);
     }
+  };
 
-    return {
-      recipientPhoneNumber: contact.phone, // 전화번호
-      messageContent: message, // 메시지 내용
-      imageBase64: imageBase64, // Base64 데이터 전달
-    };
-  });
-
-  console.log("Merged Data:", JSON.stringify(mergedData, null, 2)); // 병합된 데이터 확인
-  return mergedData;
-};
-
-//
-
-
-
-
-
+  const handleDragOver = (event) => {
+    event.preventDefault(); // 기본 드래그 오버 동작 방지
+  };
 
   return (
     <div style={styles.container}>
@@ -206,7 +231,7 @@ const mergePhoneAndMessages = () => {
           </div>
           {selectedContacts.length > 0 ? (
             <>
-            {/* ////////////////////////////////////////////////////////////////////////////// */}
+              {/* ////////////////////////////////////////////////////////////////////////////// */}
               {/* 현재 선택된 연락처의 변환된 메시지 표시 */}
               <textarea
                 style={styles.textArea}
@@ -256,9 +281,8 @@ const mergePhoneAndMessages = () => {
                 </button>
               </div>
             </>
-          ) 
-          ////////////////////////////////////////////////////////////////////////////////////////////////////
-          : (
+          ) : (
+            ////////////////////////////////////////////////////////////////////////////////////////////////////
             <>
               {/* 선택된 연락처가 없을 경우 기본 메시지 입력 */}
               <textarea
@@ -287,7 +311,11 @@ const mergePhoneAndMessages = () => {
               이미지 자동생성
             </button>
           </div>
-          <div style={styles.imageBox}>
+          <div
+            style={styles.imageBox}
+            onDrop={handleImageDrop} // 드롭 이벤트
+            onDragOver={handleDragOver} // 드래그 오버 이벤트
+          >
             {generatedImage ? (
               <div style={styles.imageContainer}>
                 <img
@@ -316,7 +344,6 @@ const mergePhoneAndMessages = () => {
               </div>
             ) : (
               <>
-                {/* 복원 버튼과 텍스트 렌더링 */}
                 {prevImage && (
                   <button
                     style={
@@ -337,9 +364,8 @@ const mergePhoneAndMessages = () => {
                     <FiRotateCw size={20} />
                   </button>
                 )}
-                {/* 박스 중앙에 텍스트 표시 */}
                 <p style={styles.imagePlaceholderText}>
-                  이미지가 여기에 표시됩니다.
+                  이미지를 드래그 앤 드롭하여 첨부하세요 (300KB 이하)
                 </p>
               </>
             )}
@@ -489,12 +515,10 @@ const styles = {
     lineHeight: "1.5",
     outline: "none",
     marginBottom: "10px",
-    fontSize: "18px", 
+    fontSize: "18px",
     fontFamily: "'Arial', sans-serif", // 폰트 설정
     fontWeight: "bold", // 글씨를 bold로 설정
   },
-
-
 
   imageBox: {
     width: "100%",
@@ -611,11 +635,11 @@ const styles = {
     boxShadow: "0px 6px 8px rgba(0, 0, 0, 0.3)", // 그림자 효과 강화
   },
   imagePlaceholderText: {
-    fontSize: "18px",
+    fontSize: "20px",
     color: "#A9A9A9",
     textAlign: "center",
     position: "absolute",
-    top: "50%",
+    top: "40%",
     left: "50%",
     transform: "translate(-50%, -50%)", // 텍스트를 박스 중앙에 배치
     pointerEvents: "none", // 클릭 불가
