@@ -1,9 +1,9 @@
-// components/MessageAnimation.js
+// components/MessageGenerateAnimation.js
 import React from 'react';
 import { Player } from '@lottiefiles/react-lottie-player';
-import messageAnimationData from '../animations/message2Enimation.json'; // Lottie 애니메이션 JSON 파일
+import messageAnimationData from '../animations/messageGenerateAnimation.json'; // Lottie 애니메이션 JSON 파일
 
-const MessageAnimation = () => {
+const MessageGenerateAnimation = () => {
   return (
     <div style={styles.overlay}>
       <Player
@@ -32,4 +32,4 @@ const styles = {
   },
 };
 
-export default MessageAnimation;
+export default MessageGenerateAnimation;

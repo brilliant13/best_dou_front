@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import LoadingAnimation from '../components/LoadingAnimation';
+import MessageGenerateAnimation from '../components/MessageGenerateAnimation';
+import Message2Animation from '../components/MessageAnimation';
+
 
 // 메시지 생성 페이지 컴포넌트
 const MessageGenerationPage = () => {
@@ -105,7 +108,7 @@ const MessageGenerationPage = () => {
 
   return (
     <div style={styles.container}>
-      {isLoading && <LoadingAnimation />}
+      {isLoading && <MessageGenerateAnimation />}
       <div style={styles.row}>
         {/* 왼쪽 섹션: 발송 목적 및 내용 */}
         <div style={styles.column}>
@@ -206,7 +209,9 @@ const styles = {
     padding: "10px",
     borderRadius: "8px",
     border: "1px solid #4A90E2",
-    fontSize: "16px",
+    fontSize: "18px",
+    fontFamily: "'Arial', sans-serif", // 폰트 설정
+    fontWeight: "bold", //bold로 설정
     resize: "none", // 크기 조절 불가능
   },
   keywordContainer: {

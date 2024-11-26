@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import tonesobj from "../data/tones.json";
 import MessageAnimation from "../components/MessageAnimation";
-
+import Message2Animation from "../components/MessageAnimation";
 
 const PersonalizationModal = ({
   selectedContacts,
@@ -10,6 +10,10 @@ const PersonalizationModal = ({
   convertedTexts,
   setConvertedTexts,
   onComplete,
+  message,
+  //추가
+  setContacts, // 추가
+  //
 }) => {
   // 톤 선택 버튼을 렌더링하기 위한 톤 목록
   const tones = tonesobj;
@@ -19,16 +23,66 @@ const PersonalizationModal = ({
 
   const currentContact = selectedContacts[currentIndex];
   const { tag, memo } = currentContact; // 현재 선택된 연락처의 tag와 memo 가져오기
-  const [isLoading, setIsLoading] = useState(false); // 로딩 상태
+  const [isHovering, setIsHovering] = useState(false);
+  const [selectedToneExamples, setSelectedToneExamples] = useState([]);
+  const handleMouseEnter = () => setIsHovering(true);
+  const handleMouseLeave = () => setIsHovering(false);
 
   // handleToneSelection 함수 추가
   const handleToneSelection = (toneInstruction) => {
     if (currentContact) {
+      const tone = tones.find((tone) => tone.instruction === toneInstruction);
       setSelectedTones((prev) => ({
         ...prev,
         [currentContact.id]: toneInstruction,
       }));
+      setSelectedToneExamples(tone ? tone.examples : []); // 선택된 어조의 예시 설정
     }
+  };
+
+  // const handleToneSelection = (toneInstruction) => {
+  //   if (currentContact) {
+  //     setSelectedTones((prev) => ({
+  //       ...prev,
+  //       [currentContact.id]: toneInstruction,
+  //     }));
+
+  //     // ContactList의 contacts 배열 업데이트
+  //     setContacts((prevContacts) =>
+  //       prevContacts.map((contact) =>
+  //         contact.id === currentContact.id
+  //           ? { ...contact, tone: toneInstruction }
+  //           : contact
+  //       )
+  //     );
+  //   }
+  // };
+  ///추가
+  // const handleComplete = () => {
+  //   // 완료 버튼 클릭 시 업데이트된 톤을 부모 컴포넌트로 전달
+  //   const updatedContacts = selectedContacts.map((contact) => ({
+  //     ...contact,
+  //     tone: selectedTones[contact.id],
+  //   }));
+  //   setContacts(updatedContacts); // ContactList의 contacts 배열 업데이트
+  //   closeModal();
+  // };
+  // //
+
+  const handleComplete = () => {
+    // 완료 버튼 클릭 시 업데이트된 톤을 부모 컴포넌트로 전달
+    const updatedContacts = selectedContacts.map((contact) => ({
+      ...contact,
+      tone: selectedTones[contact.id],
+    }));
+    setContacts((prevContacts) =>
+      prevContacts.map(
+        (contact) =>
+          updatedContacts.find((updated) => updated.id === contact.id) ||
+          contact
+      )
+    ); // 부모의 contacts 배열 업데이트
+    closeModal();
   };
 
   const handlePrev = () => {
@@ -56,6 +110,15 @@ const PersonalizationModal = ({
             : "기본 말투로",
         };
       });
+      // 선택된 톤의 예시를 초기화
+      const defaultTone = tones.find(
+        (tone) => tone.label === currentContact.tone
+      );
+      if (defaultTone) {
+        setSelectedToneExamples(defaultTone.examples);
+      } else {
+        setSelectedToneExamples([]); // 예시가 없으면 빈 배열로 설정
+      }
     }
   }, [currentContact, tones]);
 
@@ -92,6 +155,7 @@ const PersonalizationModal = ({
     Tags: "${tag}"
     Memo: "${memo}"
     Examples for this tone:
+    
     ${examplesText}
   `;
     setLoading(true);
@@ -142,126 +206,174 @@ const PersonalizationModal = ({
       [currentContact.id]: value,
     }));
   };
+  const initMessage = () => {
+    setConvertedTexts((prev) => ({
+      ...prev,
+      [currentContact.id]: message, // 현재 연락처의 텍스트를 기본 메시지로 변경
+    }));
+  };
 
   return (
     <div style={styles.modalOverlay}>
       <div style={styles.modalContent}>
         {loading && <MessageAnimation />}
-        <h2 style={styles.title}>텍스트 개인 맞춤화</h2>
-
-        {currentContact && (
-          <form style={styles.form}>
-            <div style={styles.inputGroup}>
-              <label>이름:</label>
-              <input
-                type="text"
-                value={currentContact.name}
-                readOnly
-                style={styles.inputField}
-              />
-            </div>
-            <div style={styles.inputGroup}>
-              <label>특징:</label>
-              <input
-                type="text"
-                value={currentContact.tag}
-                readOnly
-                style={styles.inputField}
-              />
-            </div>
-            <div style={styles.inputGroup}>
-              <label>메모:</label>
-              <input
-                type="text"
-                value={currentContact.memo}
-                readOnly
-                style={styles.inputField}
-              />
-            </div>
-
-            <div style={styles.toneSelection}>
-              <label>어조 선택:</label>
-              <div style={styles.toneButtons}>
-                {tones.map((tone) => (
-                  <button
-                    key={tone.label}
-                    type="button"
-                    style={{
-                      ...styles.toneButton,
-                      backgroundColor:
-                        selectedTones[currentContact.id] === tone.instruction
-                          ? "#4A90E2"
-                          : "#e1e5f2", // 선택되지 않은 경우 흰색
-                      color:
-                        selectedTones[currentContact.id] === tone.instruction
-                          ? "white"
-                          : "black",
-                    }}
-                    onClick={() => handleToneSelection(tone.instruction)}
-                  >
-                    {tone.label}
-                  </button>
-                ))}
+        {/* 왼쪽 영역 */}
+        <div style={styles.leftSection}>
+          <h2 style={styles.title}>텍스트 개인 맞춤화</h2>
+          {currentContact && (
+            <>
+              <div style={styles.inputGroup}>
+                <label>이름:</label>
+                <input
+                  type="text"
+                  value={currentContact.name}
+                  readOnly
+                  style={styles.inputField}
+                />
               </div>
-            </div>
 
-            <div style={styles.convertSection}>
-              <span style={styles.convertLabel}>텍스트 변환</span>
-              <button
-                type="button"
-                style={styles.convertButton}
-                onClick={handleConvert}
-                disabled={loading}
-              >
-                {loading ? "변환 중..." : "변환"}
-              </button>
-            </div>
+              <div style={styles.inputGroup}>
+                <label>특징:</label>
+                <input
+                  type="text"
+                  value={currentContact.tag}
+                  readOnly
+                  style={styles.inputField}
+                />
+              </div>
 
-            <textarea
-              style={styles.textArea}
-              value={convertedTexts[currentContact.id] || ""}
-              onChange={handleTextChange}
-              placeholder="여기에 텍스트가 표시됩니다."
-            />
-          </form>
-        )}
+              <div style={styles.inputGroup}>
+                <label>기억:</label>
+                <input
+                  type="text"
+                  value={currentContact.memo}
+                  readOnly
+                  style={styles.inputField}
+                />
+              </div>
 
-        <div style={styles.pagination}>
-          <button onClick={() => setCurrentIndex(0)} style={styles.navButton}>
-            처음
-          </button>
-          <button
-            onClick={handlePrev}
-            disabled={currentIndex === 0}
-            style={styles.navButton}
-          >
-            이전
-          </button>
-          <span style={styles.pageInfo}>
-            {currentIndex + 1} / {selectedContacts.length}
-          </span>
-          <button
-            onClick={handleNext}
-            disabled={currentIndex === selectedContacts.length - 1}
-            style={styles.navButton}
-          >
-            다음
-          </button>
-          <button
-            onClick={() => setCurrentIndex(selectedContacts.length - 1)}
-            style={styles.navButton}
-          >
-            끝
-          </button>
+              <div style={styles.toneSelection}>
+                <label>어조 선택:</label>
+                <div style={styles.toneButtons}>
+                  {tones.map((tone) => (
+                    <button
+                      key={tone.label}
+                      type="button"
+                      style={{
+                        ...styles.toneButton,
+                        backgroundColor:
+                          selectedTones[currentContact.id] === tone.instruction
+                            ? "#4A90E2"
+                            : "#e1e5f2", // 선택되지 않은 경우 흰색
+                        color:
+                          selectedTones[currentContact.id] === tone.instruction
+                            ? "white"
+                            : "black",
+                      }}
+                      onClick={() => handleToneSelection(tone.instruction)}
+                    >
+                      {tone.label}
+                    </button>
+                  ))}
+                </div>
+                {/* 선택된 어조의 예시 표시 */}
+                {/* 예시 설명 및 렌더링 */}
+                <div style={styles.examples}>
+                  {selectedToneExamples.length > 0 ? (
+                    <>
+                      <p style={styles.examplesDescription}>
+                        해당 말투는 이런 예시들을 참고합니다:
+                      </p>
+                      {selectedToneExamples.map((example, index) => (
+                        <div key={index} style={styles.exampleCard}>
+                          <p style={styles.exampleText}>
+                            <strong>예시 {index + 1}: </strong>
+                            {example}
+                          </p>
+                        </div>
+                      ))}
+                    </>
+                  ) : (
+                    <p style={styles.noExampleText}>예시가 없습니다.</p>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
-        <div style={styles.buttonGroup}>
-          <button onClick={closeModal} style={styles.closeButton}>
-            닫기
-          </button>
-          <button onClick={onComplete} style={styles.completeButton}>
+        {/* 오른쪽 영역 */}
+        <div style={styles.rightSection}>
+          <div style={styles.convertSection}>
+            <span style={styles.convertLabel}>텍스트 변환</span>
+            <button
+              type="button"
+              style={styles.convertButton}
+              onClick={handleConvert}
+              disabled={loading}
+            >
+              {loading ? "변환 중..." : "변환"}
+            </button>
+            <button
+              type="button"
+              onClick={initMessage}
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              style={{
+                ...styles.resetButton,
+                ...(isHovering && styles.resetButtonHover), // hover 시 추가 스타일 적용
+              }}
+            >
+              ↺ 되돌리기
+            </button>
+          </div>
+
+          <textarea
+            style={styles.textArea}
+            value={convertedTexts[currentContact.id] || ""}
+            onChange={handleTextChange}
+            placeholder="여기에 텍스트가 표시됩니다."
+          />
+          <div style={styles.pagination}>
+            <button onClick={() => setCurrentIndex(0)} style={styles.navButton}>
+              처음
+            </button>
+            <button
+              onClick={handlePrev}
+              disabled={currentIndex === 0}
+              style={styles.navButton}
+            >
+              이전
+            </button>
+            <span style={styles.pageInfo}>
+              {currentIndex + 1} / {selectedContacts.length}
+            </span>
+            <button
+              onClick={handleNext}
+              disabled={currentIndex === selectedContacts.length - 1}
+              style={styles.navButton}
+            >
+              다음
+            </button>
+            <button
+              onClick={() => setCurrentIndex(selectedContacts.length - 1)}
+              style={styles.navButton}
+            >
+              끝
+            </button>
+          </div>
+
+          <div style={styles.buttonGroup}>
+            <button onClick={closeModal} style={styles.closeButton}>
+              닫기
+            </button>
+            {/* <button onClick={onComplete} style={styles.completeButton}>
             완료
-          </button>
+          </button> */}
+            <button onClick={handleComplete} style={styles.completeButton}>
+              완료
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -284,12 +396,39 @@ const styles = {
     backgroundColor: "white",
     padding: "30px",
     borderRadius: "12px",
-    width: "600px", // 모달창 너비
-    height: "850px", // 모달창 높이
+    width: "1200px", // 너비 증가
+    height: "900px", // 높이 증가
     boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
     zIndex: 1001,
+    display: "flex", // 좌우 레이아웃
+    gap: "20px", // 좌우 간격
     overflowY: "auto",
   },
+  leftSection: {
+    flex: 1.7, // 왼쪽 섹션 크기 조정
+    display: "flex",
+    flexDirection: "column",
+    gap: "15px",
+  },
+  rightSection: {
+    flex: 1.4, // 오른쪽 섹션 크기 조정
+    display: "flex",
+    flexDirection: "column",
+    gap: "20px",
+  },
+  textArea: {
+    flex: 1, // 오른쪽 영역에서 입력창이 충분히 커지도록
+    marginTop: "15px",
+    padding: "12px",
+    fontSize: "18px",
+    lineHeight: "1.6", // 줄 간격 조정 (가독성 향상)
+    borderRadius: "6px",
+    border: "1px solid #ccc",
+    resize: "none",
+    boxSizing: "border-box",
+    height: "400px",
+  },
+
   title: {
     marginBottom: "20px",
     fontSize: "22px",
@@ -349,22 +488,11 @@ const styles = {
     cursor: "pointer",
     transition: "background-color 0.3s",
   },
-  textArea: {
-    marginTop: "15px",
-    padding: "12px",
-    fontSize: "16px",
-    borderRadius: "6px",
-    border: "1px solid #ccc",
-    width: "100%",
-    height: "300px", // 입력창 높이
-    resize: "none",
-    boxSizing: "border-box",
-  },
+
   pagination: {
     display: "flex",
     justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: "20px",
+    marginTop: "10px",
   },
   navButton: {
     backgroundColor: "#4A90E2", // 네비게이션 버튼 색상
@@ -383,6 +511,7 @@ const styles = {
   buttonGroup: {
     display: "flex",
     justifyContent: "space-between",
+    gap: "10px", // 닫기와 완료 버튼 간격 추가
     marginTop: "20px",
   },
   closeButton: {
@@ -404,6 +533,56 @@ const styles = {
     cursor: "pointer",
     width: "48%",
     transition: "background-color 0.3s",
+  },
+  resetButton: {
+    backgroundColor: "white", // 흰색 배경
+    color: "black", // 검은 텍스트
+    borderWidth: "3px", // 테두리 두께
+    borderStyle: "solid", // 테두리 스타일
+    borderColor: "#d3d3d3", // 테두리 색상
+    padding: "4px 13px",
+    borderRadius: "6px",
+    cursor: "pointer",
+    marginLeft: "auto", // 오른쪽 정렬
+    transition: "all 0.3s ease", // 부드러운 hover 효과
+  },
+  resetButtonHover: {
+    backgroundColor: "#f0f0f0", // hover 시 밝은 회색 배경
+    borderColor: "#b0b0b0", // hover 시 테두리 색상 변경
+    transform: "scale(1.02)", // 약간 커짐
+    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)", // 눌리는 느낌의 그림자
+  },
+  examples: {
+    marginTop: "20px", // 어조 선택 버튼과 예시 간의 간격
+    padding: "15px",
+    backgroundColor: "#f9f9f9",
+    borderRadius: "8px",
+    border: "1px solid #e0e0e0",
+    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+  },
+  examplesDescription: {
+    fontSize: "14px",
+    fontWeight: "bold",
+    color: "#4A90E2",
+    marginBottom: "15px", // 설명과 예시 카드 간의 간격
+  },
+  exampleCard: {
+    backgroundColor: "#ffffff",
+    padding: "10px",
+    borderRadius: "6px",
+    border: "1px solid #ddd",
+    marginBottom: "15px", // 각 예시 카드 간의 간격
+    boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.1)",
+  },
+  exampleText: {
+    fontSize: "14px",
+    color: "#333",
+    lineHeight: "1.5",
+  },
+  noExampleText: {
+    fontSize: "14px",
+    color: "#999",
+    textAlign: "center",
   },
 };
 
