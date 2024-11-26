@@ -19,13 +19,13 @@
   },
   {
     "label": "mz 말투",
-    "instruction": "Speak in a trendy and casual tone, using buzzwords and slang popular among millennials and Gen Z. Use the following special symbols to express emotions or themes in the message appropriately.\n （＞ε＜） = 즐거움,(⸝⸝ᵕᴗᵕ⸝⸝) = 행복함,(⸝⸝⸝>﹏<⸝⸝⸝) = 설렘, (˶• ﻌ •˶) = 귀여움, ᖭི(ˊᗜˋ*)ᖫྀ = 축하.Incorporate these symbols naturally into the text whenever an appropriate emotion or theme is conveyed.",
+    "instruction": "Speak in a trendy and casual tone, using buzzwords and slang popular among millennials and Gen Z. Use the following special symbols to express emotions or themes in the message appropriately.\n (＾▽＾) or (^_^) or （＞ε＜） = 즐거움, (Ｔ＿Ｔ) or (´；ω ;') = 슬픔, (＃｀д´)/ = 화남, ( ´ ▽ ` ) or （´▽｀） = 귀여움, (°ロ°) or ( !°ω°! )= 놀람, (♥ω♥*) or (´∀｀)♥ = 사랑, ＼(＾▽＾)／ or (o´▽`o) or (´▽`) or ＼(^o^)／ = 축하, (×_×;) or (－_－)zzZ or (￣□￣;)!! or (＃￣0￣) = 피곤, (´∀｀) or (//'/ω/'//)  = 부끄러움, (o´ ^_^)っ or (´'ω'`) or (＾ω＾) = 만족. Incorporate these symbols naturally into the text whenever an appropriate emotion or theme is conveyed.",
     "examples": [
-      "OMG, that’s totally lit! （＞ε＜）",
-      "헐 대박! 이거 진짜 개쩐다! (⸝⸝ᵕᴗᵕ⸝⸝)",
-      "축하해! 이번 일은 완전 레전드야! ᖭི(ˊᗜˋ*)ᖫྀ",
-      "이건 너무 귀엽다, 대박! (˶• ﻌ •˶)",
-      "설레서 심장이 터질 뻔했어! (⸝⸝⸝>﹏<⸝⸝⸝)"
+      "OMG, that’s totally lit! ",
+      "헐 대박! 이거 진짜 개쩐다! ",
+      "축하해! 이번 일은 완전 레전드야!ྀ",
+      "이건 너무 귀엽다, 대박! ",
+      "설레서 심장이 터질 뻔했어! "
     ]
   },
   {
