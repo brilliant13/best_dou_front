@@ -12,6 +12,7 @@ import {
 import PersonalizationModal from "./PersonalizationModal"; // 모달 컴포넌트 임포트
 import { useNavigate } from "react-router-dom"; // 페이지 이동을 위한 useNavigate 사용
 import tonesobj from "../data/tones.json"; // JSON 파일 import
+import { useSelector, useDispatch } from "react-redux";
 
 const ContactList = ({
   message,
@@ -29,95 +30,12 @@ const ContactList = ({
   const [isAllChecked, setIsAllChecked] = useState(false); // 전체 선택 상태를 저장하는 변수
   const [isEditing, setIsEditing] = useState(null); // 수정 모드 상태 저장
   const [editData, setEditData] = useState({ tag: "", memo: "", tone: "" });
-  const [contacts, setContacts] = useState([
-    {
-      id: 1,
-      profile: "https://via.placeholder.com/40",
-      name: "정웅",
-      nickname: "대학동기",
-      email: "Jung@hansung.ac.kr",
 
-      phone: "01092014486",
+  const contactsobj = useSelector((state) => state.contacts); // Redux에서 상태 가져오기
 
-      group: "찐친",
-      tag: "군대 동기. 최근에 집을 샀음. 최근에 아기가 생김.",
-      memo: "내가 군대에서 부조리를 심하게 당했는데, 웅이가 도와줘서 고마움을 갖고 있음.",
-      tone: tones[0].label,
-    },
-    {
-      id: 2,
-      profile: "https://via.placeholder.com/40",
-      name: "안예찬",
-      nickname: "대학동기",
-      email: "Ahn@hansung.ac.kr",
+  const [contacts, setContacts] = useState(contactsobj);
 
-      phone: "01076826007",
-      group: "찐친",
-      tag: "대학 동기. 최근에 취업함.",
-      memo: "대학 마지막 졸업 작품을 같이 했는데, 의견이 맞지 않아 싸워서 서로 어색해질 뻔했음.",
-      tone: tones[1].label,
-    },
-    {
-      id: 3,
-      profile: "https://via.placeholder.com/40",
-      name: "김소룡",
-      nickname: "선생님",
-      email: "Kim@hansung.ac.kr",
-      phone: "01093052486",
-      group: "찐친",
-      tag: "중학교 담임 선생님. 국어를 가르쳐주셨음. 항상 친절하게 가르쳐주심.",
-      memo: "쉬는 시간마다 선생님께 질문을 자주 드렸는데, 열심히 한다고 초콜릿을 주셨음. 고등학교에 올라갈 때 선생님도 같은 고등학교로 오셔서 또 뵈었음.",
-      tone: tones[8].label,
-    },
-    {
-      id: 4,
-      profile: "https://via.placeholder.com/40",
-      name: "김문권",
-      nickname: "선생님",
-      email: "Kim@hansung.ac.kr",
-      phone: "01056655745",
-      group: "찐친",
-      tag: "중학교 3학년 때 담임선생님. 과학을 가르쳐주셨음.",
-      memo: "중학교 3학년 때 일본 교환학생을 전국에서 선출했었는데, 선생님께서 추천서를 작성해주셔서 전국 교환학생에 뽑혔다. 천체에 대해 배울 때 이해가 어려웠었는데, 선생님께서 지구본과 상세한 교구도구로 이해를 시켜주셨음.",
-      tone: tones[4].label,
-    },
-    {
-      id: 5,
-      profile: "https://via.placeholder.com/40",
-      name: "임차민",
-      nickname: "대학동기",
-      email: "Im@hansung.ac.kr",
-      phone: "01063906143",
-      group: "찐친",
-      tag: "20학번 동기. 키가 정말 큼. 6년 사귄 여자친구가 있음. 사랑꾼이다.",
-      memo: "학교에 밤 12시까지 둘이 남아서, 고급모바일 프로그래밍 UI설계서를 만들었다. 학교 근처 맛집인 나주곰탕집에서 서로의 연애사를 나누었음.",
-      tone: tones[1].label,
-    },
-    {
-      id: 6,
-      profile: "https://via.placeholder.com/40",
-      name: "윤단비",
-      nickname: "대학동기",
-      email: "Yun@hansung.ac.kr",
-      phone: "01011112222",
-      group: "찐친",
-      tag: "22학번 후배. 대학교에서 처음으로 사귄 친구.",
-      memo: "시험 기간마다 항상 같이 새벽까지 스터디를 했었다. 교내 테니스 대회에서 우승을 했었다.",
-      tone: tones[1].label,
-    },
-    {
-      id: 7,
-      profile: "https://via.placeholder.com/40",
-      name: "박영수",
-      nickname: "동아리원",
-      email: "Park@hansung.ac.kr",
-      phone: "01033334444",
-      group: "동아리",
-      tag: "활발한 성격",
-      memo: "다양한 취미를 가진 친구",
-      tone: tones[1].label,
-    },
-  ]);
+  console.log(contacts);
 
   const generateMessagesForSelectedContacts = () => {
     const texts = selectedContacts.reduce((acc, contact) => {
