@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import LoadingAnimation from '../components/LoadingAnimation';
-import MessageGenerateAnimation from '../components/MessageGenerateAnimation';
-import Message2Animation from '../components/MessageAnimation';
-
+import LoadingAnimation from "../components/LoadingAnimation";
+import MessageGenerateAnimation from "../components/MessageGenerateAnimation";
+import Message2Animation from "../components/MessageAnimation";
 
 // 메시지 생성 페이지 컴포넌트
 const MessageGenerationPage = () => {
@@ -88,12 +87,6 @@ const MessageGenerationPage = () => {
   };
 
   const handleUseMessage = () => {
-    const alertMessage = `선택된 키워드: ${
-      selectedKeywords.length > 0 ? selectedKeywords.join(", ") : "없음"
-    }\n\n입력된 메시지:\n${generatedMessage}`;
-
-    alert(alertMessage);
-
     navigate("/", { state: { message: generatedMessage } }); // generatedMessage를 state로 전달
   };
 

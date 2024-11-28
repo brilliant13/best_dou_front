@@ -136,7 +136,13 @@ const ContactList = ({
   // 수정 모드로 전환
   const handleEdit = (contact) => {
     setIsEditing(contact.id);
-    setEditData({ tag: contact.tag, memo: contact.memo, tone: contact.tone });
+    setEditData({
+      name: contact.name, // 이름 추가
+      phone: contact.phone, // 전화번호 추가
+      tag: contact.tag,
+      memo: contact.memo,
+      tone: contact.tone,
+    });
   };
 
   // 수정 완료 후 저장
@@ -319,12 +325,30 @@ const ContactList = ({
                     {isEditing === contact.id ? (
                       <>
                         <p>
+                          <strong>이름:</strong>{" "}
+                          <input
+                            name="name"
+                            value={editData.name}
+                            onChange={handleInputChange}
+                            style={styles.editInput}
+                          />
+                        </p>
+                        <p>
+                          <strong>전화번호:</strong>{" "}
+                          <input
+                            name="phone"
+                            value={editData.phone}
+                            onChange={handleInputChange}
+                            style={styles.editInput}
+                          />
+                        </p>
+                        <p>
                           <strong>특징:</strong>{" "}
                           <input
                             name="tag"
                             value={editData.tag}
                             onChange={handleInputChange}
-                            style={{ width: "500px", height: "30px" }}
+                            style={styles.editInput}
                           />
                         </p>
                         <p>
@@ -333,7 +357,7 @@ const ContactList = ({
                             name="memo"
                             value={editData.memo}
                             onChange={handleInputChange}
-                            style={{ width: "500px", height: "30px" }}
+                            style={styles.editInput}
                           />
                         </p>
                         <p>
@@ -590,6 +614,22 @@ const styles = {
   },
   selectAllText: {
     color: "black",
+  },
+  editInput: {
+    width: "100%", // 가로 100%로 확장
+    maxWidth: "700px", // 최대 너비 제한
+    padding: "10px", // 내부 여백 추가
+    borderRadius: "8px", // 둥근 테두리
+    border: "1px solid #4A90E2", // 연한 파란색 테두리
+    fontSize: "16px", // 글씨 크기 조정
+    marginBottom: "10px", // 입력 필드 간 간격 추가
+    outline: "none", // 포커스 시 외곽선 제거
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)", // 약간의 그림자 추가
+    transition: "border-color 0.3s, box-shadow 0.3s", // 부드러운 효과
+  },
+  editInputFocus: {
+    borderColor: "#007bff", // 포커스 시 테두리 색 변경
+    boxShadow: "0 4px 8px rgba(0, 123, 255, 0.2)", // 포커스 시 그림자 강조
   },
 };
 

@@ -54,18 +54,18 @@ const PersonalizationModal = ({
   };
 
   const handleComplete = () => {
-    // 완료 버튼 클릭 시 업데이트된 톤을 부모 컴포넌트로 전달
-    const updatedContacts = selectedContacts.map((contact) => ({
-      ...contact,
-      tone: selectedTones[contact.id],
-    }));
-    setContacts((prevContacts) =>
-      prevContacts.map(
-        (contact) =>
-          updatedContacts.find((updated) => updated.id === contact.id) ||
-          contact
-      )
-    ); // 부모의 contacts 배열 업데이트
+    // // 완료 버튼 클릭 시 업데이트된 톤을 부모 컴포넌트로 전달
+    // const updatedContacts = selectedContacts.map((contact) => ({
+    //   ...contact,
+    //   tone: selectedTones[contact.id],
+    // }));
+    // setContacts((prevContacts) =>
+    //   prevContacts.map(
+    //     (contact) =>
+    //       updatedContacts.find((updated) => updated.id === contact.id) ||
+    //       contact
+    //   )
+    // ); // 부모의 contacts 배열 업데이트
     closeModal();
   };
 
