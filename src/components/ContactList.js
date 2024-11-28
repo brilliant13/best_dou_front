@@ -173,9 +173,9 @@ const ContactList = ({
     setEditData((prevData) => ({ ...prevData, tone: tone }));
   };
 
-  // 초기 선택 상태 설정 (3명은 미리 선택되게)
+  // 초기 선택 상태 설정 (4명은 미리 선택되게)
   useEffect(() => {
-    const initialSelectedContacts = contacts.slice(0, 4); // 처음 3명의 연락처 선택
+    const initialSelectedContacts = contacts.slice(0, 4); // 처음 4명의 연락처 선택
     setSelectedContacts(initialSelectedContacts);
 
     // 선택된 연락처에 대한 기본 메시지도 설정
