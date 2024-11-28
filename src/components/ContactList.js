@@ -173,20 +173,20 @@ const ContactList = ({
     setEditData((prevData) => ({ ...prevData, tone: tone }));
   };
 
-  // 초기 선택 상태 설정 (4명은 미리 선택되게)
-  useEffect(() => {
-    const initialSelectedContacts = contacts.slice(0, 4); // 처음 4명의 연락처 선택
-    setSelectedContacts(initialSelectedContacts);
+  // // 초기 선택 상태 설정 (4명은 미리 선택되게)
+  // useEffect(() => {
+  //   const initialSelectedContacts = contacts.slice(0, 4); // 처음 4명의 연락처 선택
+  //   setSelectedContacts(initialSelectedContacts);
 
-    // 선택된 연락처에 대한 기본 메시지도 설정
-    setConvertedTexts((prevTexts) => {
-      const newTexts = { ...prevTexts };
-      initialSelectedContacts.forEach((contact) => {
-        newTexts[contact.id] = message; // 메시지 초기화
-      });
-      return newTexts;
-    });
-  }, [contacts, setSelectedContacts, setConvertedTexts, message]);
+  //   // 선택된 연락처에 대한 기본 메시지도 설정
+  //   setConvertedTexts((prevTexts) => {
+  //     const newTexts = { ...prevTexts };
+  //     initialSelectedContacts.forEach((contact) => {
+  //       newTexts[contact.id] = message; // 메시지 초기화
+  //     });
+  //     return newTexts;
+  //   });
+  // }, [contacts, setSelectedContacts, setConvertedTexts, message]);
 
   return (
     <div style={styles.container}>
