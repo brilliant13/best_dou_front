@@ -1,5 +1,5 @@
 //주소록 및 카테고리 전환 컴포넌트
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FaTrash,
   FaChevronUp,
@@ -12,7 +12,7 @@ import {
 import PersonalizationModal from "./PersonalizationModal"; // 모달 컴포넌트 임포트
 import { useNavigate } from "react-router-dom"; // 페이지 이동을 위한 useNavigate 사용
 import tonesobj from "../data/tones.json"; // JSON 파일 import
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 const ContactList = ({
   message,
@@ -172,6 +172,21 @@ const ContactList = ({
   const handleToneSelection = (tone) => {
     setEditData((prevData) => ({ ...prevData, tone: tone }));
   };
+
+  // 초기 선택 상태 설정 (4명은 미리 선택되게)
+  useEffect(() => {
+    const initialSelectedContacts = contacts.slice(0, 4); // 처음 4명의 연락처 선택
+    setSelectedContacts(initialSelectedContacts);
+
+    // 선택된 연락처에 대한 기본 메시지도 설정
+    setConvertedTexts((prevTexts) => {
+      const newTexts = { ...prevTexts };
+      initialSelectedContacts.forEach((contact) => {
+        newTexts[contact.id] = message; // 메시지 초기화
+      });
+      return newTexts;
+    });
+  }, [contacts, setSelectedContacts, setConvertedTexts, message]);
 
   return (
     <div style={styles.container}>
