@@ -361,10 +361,38 @@ const MainPage = () => {
                 </button>
               </div>
             ) : (
-              <p style={styles.imagePlaceholderText}>
-                이미지를 드래그 앤 드롭하거나 첨부 버튼을 이용하세요 (300KB
-                이하)
-              </p>
+              <>
+                {/* 복원 버튼과 텍스트 렌더링 */}
+
+                {prevImage && (
+                  <button
+                    style={
+                      isDeleteButtonHovered
+                        ? {
+                            ...styles.imageRestoreButton,
+
+                            ...styles.imageRestoreButtonHover,
+                          }
+                        : styles.imageRestoreButton
+                    }
+                    onClick={() => {
+                      setGeneratedImage(prevImage); // 이전 이미지를 복원
+
+                      setPrevImage(null); // 복원 후 초기화
+                    }}
+                    onMouseEnter={() => setIsDeleteButtonHovered(true)}
+                    onMouseLeave={() => setIsDeleteButtonHovered(false)}
+                  >
+                    <FiRotateCw size={20} />
+                  </button>
+                )}
+
+                {/* 박스 중앙에 텍스트 표시 */}
+
+                <p style={styles.imagePlaceholderText}>
+                  이미지가 여기에 표시됩니다.
+                </p>
+              </>
             )}
           </div>
           <input
@@ -663,7 +691,6 @@ const styles = {
     boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
     position: "relative", // 위치 조정 가능하게 설정
     top: "2px", // 아래로 5px 이동
-    
   },
   uploadButtonHover: {
     background: "#007BFF",
