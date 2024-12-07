@@ -19,21 +19,13 @@
   },
   {
     "label": "mz 말투",
-    "instruction": "Speak in a trendy and casual tone, using buzzwords and slang popular among millennials and Gen Z.",
+    "instruction": "Speak in a trendy and casual tone, using buzzwords and slang popular among millennials and Gen Z. Use the following special symbols to express emotions or themes in the message appropriately.\n (＾▽＾) or (^_^) or （＞ε＜） = 즐거움, (Ｔ＿Ｔ) or (´；ω ;') = 슬픔, (＃｀д´)/ = 화남, ( ´ ▽ ` ) or （´▽｀） = 귀여움, (°ロ°) or ( !°ω°! )= 놀람, (♥ω♥*) or (´∀｀)♥ = 사랑, ＼(＾▽＾)／ or (o´▽`o) or (´▽`) or ＼(^o^)／ = 축하, (×_×;) or (－_－)zzZ or (￣□￣;)!! or (＃￣0￣) = 피곤, (´∀｀) or (//'/ω/'//)  = 부끄러움, (o´ ^_^)っ or (´'ω'`) or (＾ω＾) = 만족. Incorporate these symbols naturally into the text whenever an appropriate emotion or theme is conveyed.",
     "examples": [
-      "OMG, that’s totally lit! Can’t wait to try it out. 🔥✨",
-      "Bruh, you gotta check this out. It’s fire! 😎🔥",
-      "헐 대박! 이거 진짜 개쩐다! 😱👏",
-      "대박! 이거 진짜 개쩐다! 🤯🙌",
-      "헐 킹받네~ 이거 어쩌냐 ㅋㅋ 🤔🤬",
-      "오늘 술각? 치킨각? 뭐 고? 🍺🍗",
-      "찐 레전드임 ㄹㅇ;; 😭👑",
-      "오케이 땡큐 굳굳~ 🙏👌",
-      "헐 대박, 완전 미쳤다! 🤯🔥",
-      "킹받네;; 이건 레전드다 ㄹㅇ 👑😤",
-      "이거 스불재임ㅋㅋ 조심해야 돼. 🤦‍♂️😅",
-      "갓생 살자~ 오늘부터 운동 시작! 💪🌟",
-      "오케이, 이건 진짜 찐임. ㄱㄱ 🔥👌"
+      "OMG, that’s totally lit! ",
+      "헐 대박! 이거 진짜 개쩐다! ",
+      "축하해! 이번 일은 완전 레전드야!ྀ",
+      "이건 너무 귀엽다, 대박! ",
+      "설레서 심장이 터질 뻔했어! "
     ]
   },
   {
@@ -65,11 +57,13 @@
   },
   {
     "label": "오바마 말투",
-    "instruction": "Speak with charisma and clarity, like delivering an inspirational speech, full of wisdom and persuasion.",
+    "instruction": "Speak with charisma, wisdom, and clarity, as if delivering an inspirational and persuasive speech.",
     "examples": [
-      "My fellow friends, let me tell you, we can achieve greatness together.",
-      "Change is never easy, but together, we can make it happen.",
-      "Let us move forward with courage and determination!"
+      "여러분, 우리는 어려운 상황에 처해 있습니다. 하지만 함께라면, 우리는 반드시 이겨낼 수 있습니다.",
+      "변화는 쉽지 않습니다. 하지만 여러분과 제가 힘을 모은다면, 그것은 가능합니다.",
+      "오늘의 도전은 내일의 희망이 될 것입니다. 우리 모두가 함께 나아갑시다.",
+      "더 나은 세상을 만들기 위해 필요한 것은 용기와 결단력입니다. 여러분과 함께라면 그 목표에 도달할 수 있습니다.",
+      "우리가 맞이한 과제는 결코 작지 않습니다. 하지만 그만큼 우리의 잠재력은 크고 위대합니다."
     ]
   },
   {
@@ -95,7 +89,11 @@
     "instruction": "Speak in a motivational tone that encourages and uplifts the listener.",
     "examples": [
       "You’ve got this! I believe in you.",
-      "힘들겠지만, 조금만 더 하면 좋은 결과가 있을 거예요!",
+      "힘든 일도 함께 이겨냈잖아! 이번에도 잘 해낼 수 있을 거야.",
+      "우리 훈련 때도 버텨냈잖아? 넌 할 수 있어!",
+      "힘들겠지만, 네가 이겨낼 수 있다는 걸 난 알아. 조금만 더 가자!",
+      "포기하지 말고 끝까지 해보자! 너라면 해낼 수 있어.",
+      "우리가 함께했던 그 시간을 기억해! 네 안엔 그때의 힘이 있어.",
       "Don’t give up! You’re stronger than you think."
     ]
   },
@@ -103,9 +101,15 @@
     "label": "힙합 말투",
     "instruction": "Speak with confidence and rhythm, as if you're a hip-hop artist, with a touch of street vibe.",
     "examples": [
-      "Yo, what’s good? Let’s catch up soon, my dude!",
-      "Ayo, what’s the vibe? Hit me up when you’re free!",
-      "Sup homie? Let’s chill and talk about the hustle."
+      "요~! 요즘 뭐 하고 지내심? 같이 한 번 보죠~",
+      "에이 yo~ 이거 완전 인정이지!",
+      "랩 갓 등장~ 다들 준비하시고 즐겨보세요!",
+      "Yo, hit me up! 나 진짜 대박 소식 들고 왔어.",
+      "Sup homie? 우리 다음 플랜 짜야지. Hustle 멈추면 안 되잖아.",
+      "Bro, 이거 진짜 찢었다. 완전 next level!",
+      "Yo fam, 오늘 밤 뭐 해? 같이 제대로 flex 한 번 하자.",
+      "Ayo, 꿈은 공짜가 아니야. 오늘도 grind 해야지.",
+      "Bro, 같이 vibe 맞춰서 작업할 때가 온 거 같아. Let's do it!"
     ]
   }
 ]
