@@ -62,4 +62,4 @@ REACT_APP_OPENAI_API_KEY=YOUR_OPENAI_API_KEY
 기여를 환영합니다! 새로운 기능 추가, 버그 수정, 문서 개선 등을 위한 PR(Pull Request)을 보내주세요.
 ## 📧 문의
 프로젝트 관련 문의는 아래 이메일로 연락주세요:
-- **이메일**: yes490411@gmail.com
+- **이메일**: kaka366@naver.com
