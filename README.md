@@ -27,7 +27,7 @@
 - **김문권** ([mk011011](https://github.com/mk011011))  
 - **안예찬** ([yes6686](https://github.com/yes6686))
 
-- <img src="https://raw.githubusercontent.com/brilliant13/portfolio/refs/heads/main/%5Bsw%5D.jpg?token=GHSAT0AAAAAAC6A2DYYPAG3HAGWS7YHHYRIZ42LLFQ" width="750"/>
+- <img src="https://raw.githubusercontent.com/brilliant13/portfolio/refs/heads/main/%5Bsw%5D.jpg" width="750"/>
 ## 🚀 기술 스택
 - **프론트엔드**: React
 - **백엔드**: Spring Boot
