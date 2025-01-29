@@ -25,7 +25,9 @@
 - **김소룡** ([SoRyong-Kim](https://github.com/SoRyong-Kim))  
 - **임차민** ([ckals413](https://github.com/ckals413))  
 - **김문권** ([mk011011](https://github.com/mk011011))  
-- **안예찬** ([yes6686](https://github.com/yes6686))  
+- **안예찬** ([yes6686](https://github.com/yes6686))
+
+- <img src="https://raw.githubusercontent.com/brilliant13/brilliant13/refs/heads/main/%5Bsw%5D.jpg" width="750"/>
 ## 🚀 기술 스택
 - **프론트엔드**: React
 - **백엔드**: Spring Boot
